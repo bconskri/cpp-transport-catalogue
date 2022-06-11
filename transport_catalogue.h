@@ -13,7 +13,11 @@
     struct Stop
     {
         Stop() = default;
-        //Stop(const std::string_view stop_name, const double lat, const double lng);
+        Stop(const std::string_view stop_name, const double lat, const double lng)
+            : name(stop_name) {
+            coords.lat = lat;
+            coords.lng = lng;
+        }
         //Stop(const Stop* other_stop);
 
         std::string name;
@@ -42,6 +46,14 @@
 
     struct RouteInfo
     {
+        explicit RouteInfo(std::string_view name, size_t stops_count, size_t unique_stops, int64_t route_length)
+            : name(name)
+            , stops_on_route(stops_count)
+            , unique_stops(unique_stops)
+            , route_length(route_length)
+            {
+
+        }
         std::string name;
         size_t stops_on_route = 0;      //R — количество остановок в маршруте автобуса от stop1 до stop1 включительно.
         size_t unique_stops = 0;        //количество уникальных остановок, на которых останавливается автобус.
@@ -52,13 +64,13 @@
     public:
         TransportCatalogue() = default;
 
-        void AddStop(Stop&&);
-        void AddRoute(BusRoute&&);
+        void AddStop(Stop&& stop);
+        void AddRoute(BusRoute&& route);
 
-        const Stop* GetStopByName(const std::string_view) const;
-        const BusRoute* GetRouteByName(const std::string_view) const;
+        [[nodiscard]] const Stop* GetStopByName(std::string_view stop_name) const;
+        [[nodiscard]] const BusRoute* GetRouteByName(std::string_view route_name) const;
 
-        const RouteInfo* GetRouteInfo(const std::string_view) const;
+        [[nodiscard]] const RouteInfo* GetRouteInfo(const std::string_view route_name) const;
 
     private:
         std::deque<Stop> stops_;                                                    //all stops data
@@ -67,8 +79,7 @@
         std::unordered_map<std::string_view, const BusRoute*> busname_to_bus;       //hash-table for search bus by name
 
         // Hasher for std::pair<Stop*, Stop*>
-        struct PairStopsHasher
-        {
+        struct PairStopsHasher {
         public:
             std::size_t operator()(const std::pair<const Stop*, const Stop*> pair_of_stops) const noexcept {
                 return 0; //FIXME

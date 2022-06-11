@@ -2,45 +2,71 @@
 // код сохраните в свой git-репозиторий
 #include "input_reader.h"
 
-void StreamData::parse_perform_upload_queries(const TransportCatalogue &transport_catalogue,
+#include <queue>
+
+void StreamData::parse_perform_upload_queries(TransportCatalogue &transport_catalogue,
                                               const int lcount,
-                                              std::istream& input) {
+                                              std::istream &input) {
     using namespace std::literals;
 
-    std::string line, query;
-    for (int i = 0; i < lcount; ++i)
-    {
+    std::queue<std::pair<std::string, std::string>> routes_to_add;
+    std::string line;
+
+    for (int i = 0; i < lcount; ++i) {
         std::getline(input, line, '\n');
         line = Trim(line);
         if (!line.empty()) {
+            //splitinto twi parts devide by :
             const size_t pos = line.find_first_of(':');
             if (pos != line.npos) { //: found - that is upload query
-                const std::string_view query_type_name = line.substr(0, pos);
-                const std::string_view query_data = line.substr(pos+1, line.npos);
+                const std::string query_type_name = line.substr(0, pos);
+                const std::string query_data = line.substr(pos + 1, line.npos);
                 //
+                //split into two parts devide by " " for name extruction
                 const size_t pos = query_type_name.find_first_of(' ');
                 if (pos != line.npos) {
-                    const std::string_view query_type = line.substr(0, pos);
-                    const std::string_view name = Trim(line.substr(pos + 1, line.npos));
+                    const std::string query_type = query_type_name.substr(0, pos);
+                    const std::string name = std::string(Trim(query_type_name.substr(pos + 1, query_type_name.npos)));
                     //
-                    if (query_type=="Stop"sv) {
+                    if (query_type == "Stop"s) {
+                        //we have query to add stop
+                        // we neeed to parse coordinates
+                        //splitinto twi parts devide by ","
+                        const size_t pos = query_data.find_first_of(',');
+                        if (pos != line.npos) {
+                            Stop stop_to_upload;
+                            stop_to_upload.name = std::move(name);
+                            stop_to_upload.coords.lat = std::stod(std::string(Rtrim(query_data.substr(0, pos))));
+                            stop_to_upload.coords.lng = std::stod(
+                                    std::string(Ltrim(query_data.substr(pos + 1, line.npos))));
+                            //add stop to transport catalogue
+                            transport_catalogue.AddStop(std::move(stop_to_upload));
 
-                    } else if ((query_type=="Bus"sv)) {
-
+                        } else {
+                            throw ("Error in coordinate format");
+                        }
+                    } else if ((query_type == "Bus"s)) {
+                        //we have query to add route
+                        //parse route and add to queue
+                        routes_to_add.push({name, query_data});
                     } else {
-                        throw("Unknown upload query type");
+                        throw ("Unknown upload query type");
                     }
                 } else {
-                    throw("Query_type/name parse error");
+                    throw ("Query_type/name parse error");
                 }
             } else {
-                throw("That is not upload query");
+                throw ("That is not upload query");
             }
         }
     }
+    //we processed all strings
+    //we added all stops
+    //now we need to process all routes from queue
+    auto a = routes_to_add;
 }
 
-void StreamData::PerfomUploadQueries(const TransportCatalogue &transport_catalogue) {
+void StreamData::PerfomUploadQueries(TransportCatalogue &transport_catalogue) {
     int n;
     this->input_ >> n;
     std::cerr << n;
@@ -49,7 +75,7 @@ void StreamData::PerfomUploadQueries(const TransportCatalogue &transport_catalog
     this->parse_perform_upload_queries(transport_catalogue, n, input_);
 }
 
-QueryPerformer* QueryPerformer::GetHandler(const input_type datasearch, std::istream& input = std::cin) {
+QueryPerformer *QueryPerformer::GetHandler(const input_type datasearch, std::istream &input = std::cin) {
     QueryPerformer *p;
     switch (datasearch) {
         case Dstream:
