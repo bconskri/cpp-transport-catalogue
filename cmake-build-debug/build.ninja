@@ -73,12 +73,6 @@ build CMakeFiles/TransportCatalogue.dir/transport_catalogue.cpp.o: CXX_COMPILER_
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir
 
-build CMakeFiles/TransportCatalogue.dir/utilities.cpp.o: CXX_COMPILER__TransportCatalogue_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/utilities.cpp || cmake_object_order_depends_target_TransportCatalogue
-  DEP_FILE = CMakeFiles/TransportCatalogue.dir/utilities.cpp.o.d
-  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
-  OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
-  OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target TransportCatalogue
@@ -87,7 +81,7 @@ build CMakeFiles/TransportCatalogue.dir/utilities.cpp.o: CXX_COMPILER__Transport
 #############################################
 # Link the executable TransportCatalogue
 
-build TransportCatalogue: CXX_EXECUTABLE_LINKER__TransportCatalogue_Debug CMakeFiles/TransportCatalogue.dir/main.cpp.o CMakeFiles/TransportCatalogue.dir/input_reader.cpp.o CMakeFiles/TransportCatalogue.dir/stat_reader.cpp.o CMakeFiles/TransportCatalogue.dir/transport_catalogue.cpp.o CMakeFiles/TransportCatalogue.dir/utilities.cpp.o
+build TransportCatalogue: CXX_EXECUTABLE_LINKER__TransportCatalogue_Debug CMakeFiles/TransportCatalogue.dir/main.cpp.o CMakeFiles/TransportCatalogue.dir/input_reader.cpp.o CMakeFiles/TransportCatalogue.dir/stat_reader.cpp.o CMakeFiles/TransportCatalogue.dir/transport_catalogue.cpp.o
   FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   POST_BUILD = :

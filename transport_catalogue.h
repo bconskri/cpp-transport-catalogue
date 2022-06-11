@@ -6,50 +6,51 @@
 #include <unordered_map>
 #include <deque>
 #include <vector>
+#include <string_view>
+#include <string>
 
-namespace transport_catalogue {
+
+    struct Stop
+    {
+        Stop() = default;
+        //Stop(const std::string_view stop_name, const double lat, const double lng);
+        //Stop(const Stop* other_stop);
+
+        std::string name;
+        geo::Coordinates coords{ 0L,0L };
+    };
+
+    struct BusRoute
+    {
+        BusRoute() = default;
+        //BusRoute(const BusRoute* other_stop_ptr);
+
+        std::string route_name;
+        std::vector<const Stop*> stops;
+        /* количество уникальных остановок, на которых останавливается автобус.
+         * Одинаковыми считаются остановки, имеющие одинаковые названия.
+         */
+        size_t unique_stop_qty = 0U;
+        /* длина маршрута в метрах.
+         * В этом задании для простоты считается, что автобус проезжает путь между двумя
+         * соседними остановками по кратчайшему расстоянию по земной поверхности.
+         */
+        double route_length = 0L;
+        //cirlce or not route
+        bool is_circular = false;
+    };
+
+    struct RouteInfo
+    {
+        std::string name;
+        size_t stops_on_route = 0;      //R — количество остановок в маршруте автобуса от stop1 до stop1 включительно.
+        size_t unique_stops = 0;        //количество уникальных остановок, на которых останавливается автобус.
+        int64_t route_length = 0;       // длина маршрута в метрах.
+    };
+
     class TransportCatalogue {
     public:
         TransportCatalogue() = default;
-
-        struct Stop
-        {
-            Stop() = default;
-            Stop(const std::string_view stop_name, const double lat, const double lng);
-            Stop(const Stop* other_stop);
-
-            std::string name;
-            geo::Coordinates coords{ 0L,0L };
-        };
-
-        struct BusRoute
-        {
-            BusRoute() = default;
-            BusRoute(const BusRoute* other_stop_ptr);
-
-            std::string route_name;
-            std::vector<const Stop*> stops;
-            /* количество уникальных остановок, на которых останавливается автобус.
-             * Одинаковыми считаются остановки, имеющие одинаковые названия.
-             */
-            size_t unique_stop_qty = 0U;
-            /* длина маршрута в метрах.
-             * В этом задании для простоты считается, что автобус проезжает путь между двумя
-             * соседними остановками по кратчайшему расстоянию по земной поверхности.
-             */
-            double route_length = 0L;
-            //cirlce or not route
-            bool is_circular = false;
-        };
-
-        struct RouteInfo
-        {
-            std::string name;
-            size_t stops_on_route = 0;      //R — количество остановок в маршруте автобуса от stop1 до stop1 включительно.
-            size_t unique_stops = 0;        //количество уникальных остановок, на которых останавливается автобус.
-            int64_t route_length = 0;       // длина маршрута в метрах.
-        };
-
 
         void AddStop(Stop&&);
         void AddRoute(BusRoute&&);
@@ -76,4 +77,3 @@ namespace transport_catalogue {
 
         std::unordered_map<std::pair<Stop*, Stop*>, int, PairStopsHasher> distances_to_other_stops;  //Hash stop to stop distance
     };
-}
