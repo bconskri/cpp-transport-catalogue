@@ -3,12 +3,12 @@
 #include "input_reader.h"
 
 void StreamData::parse_perform_upload_queries(const TransportCatalogue &transport_catalogue,
-                                  const int n,
-                                  std::istream& input) {
+                                              const int lcount,
+                                              std::istream& input) {
     using namespace std::literals;
 
     std::string line, query;
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < lcount; ++i)
     {
         std::getline(input, line, '\n');
         line = Trim(line);
@@ -28,13 +28,13 @@ void StreamData::parse_perform_upload_queries(const TransportCatalogue &transpor
                     } else if ((query_type=="Bus"sv)) {
 
                     } else {
-                        ASSERT_HINT(false, "Unknown upload query type");
+                        throw("Unknown upload query type");
                     }
                 } else {
-                    ASSERT_HINT(false, "Query_type/name parse error");
+                    throw("Query_type/name parse error");
                 }
             } else {
-                ASSERT_HINT(false, "That is not upload query");
+                throw("That is not upload query");
             }
         }
     }
@@ -42,10 +42,11 @@ void StreamData::parse_perform_upload_queries(const TransportCatalogue &transpor
 
 void StreamData::PerfomUploadQueries(const TransportCatalogue &transport_catalogue) {
     int n;
-    input_ >> n;
-    input_.ignore(1);
+    this->input_ >> n;
+    std::cerr << n;
+    this->input_.ignore(1);
 
-    parse_perform_upload_queries(transport_catalogue, n, input_);
+    this->parse_perform_upload_queries(transport_catalogue, n, input_);
 }
 
 QueryPerformer* QueryPerformer::GetHandler(const input_type datasearch, std::istream& input = std::cin) {

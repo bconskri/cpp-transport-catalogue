@@ -8,7 +8,6 @@
 
 int main() {
     std::istringstream input{
-            " [vegetables]\n"
             "10\n"
             "Stop Tolstopaltsevo: 55.611087, 37.208290\n"
             "Stop Marushkino: 55.595884, 37.209755\n"
