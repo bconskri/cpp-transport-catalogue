@@ -6,6 +6,12 @@
 #include <string_view>
 #include <string>
 #include <iostream>
+#include <vector>
+#include <sstream>
+
+enum io_type {
+    Dstream = 0, Json, Xml
+};
 
 inline std::string_view Ltrim(std::string_view str) {
     const auto pos(str.find_first_not_of(" \t\n\r\f\v"));
@@ -23,6 +29,18 @@ inline std::string_view Trim(std::string_view str) {
     str = Ltrim(str);
     str = Rtrim(str);
     return str;
+}
+
+inline std::vector<std::string> SplitByChar (const std::string &s, char delim) {
+    std::vector<std::string> result;
+    std::stringstream ss (s);
+    std::string item;
+
+    while (getline (ss, item, delim)) {
+        result.push_back(std::string(Trim(item)));
+    }
+
+    return result;
 }
 
 //inline void AssertImpl(bool value, const std::string &expr_str, const std::string &file, const std::string &func, unsigned line,

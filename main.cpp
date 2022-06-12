@@ -2,7 +2,9 @@
 // код сохраните в свой git-репозиторий
 //#include "gtest/gtest.h"
 #include "input_reader.h"
+#include "stat_reader.h"
 #include "transport_catalogue.h"
+#include "utilities.h"
 
 #include <sstream>
 
@@ -13,7 +15,6 @@ int main() {
             "Stop Marushkino: 55.595884, 37.209755\n"
             "Bus 256: Biryulyovo Zapadnoye > Biryusinka > Universam > Biryulyovo Tovarnaya > Biryulyovo Passazhirskaya > Biryulyovo Zapadnoye\n"
             "Bus 750: Tolstopaltsevo - Marushkino - Rasskazovka\n"
-            "Stop Rasskazovka: 55.632761, 37.333324\n"
             "Stop Biryulyovo Zapadnoye: 55.574371, 37.651700\n"
             "Stop Biryusinka: 55.581065, 37.648390\n"
             "Stop Universam: 55.587655, 37.645687\n"
@@ -22,9 +23,22 @@ int main() {
     };
 
     TransportCatalogue transport_catalogue{};
-    auto QueryLoader = QueryPerformer::GetHandler(input_type::Dstream,
-                                                  input);
-    QueryLoader->PerfomUploadQueries(transport_catalogue);
+    //perform upload queries
+    auto upload_query_handler = input_reader::QueryHandler::GetHandler(Dstream,
+                                                                       input);
+    upload_query_handler->PerfomUploadQueries(transport_catalogue);
+
+    std::istringstream stat_input{
+            "3\n"
+            "Bus 256\n"
+            "Bus 750\n"
+            "Bus 751\n"
+    };
+
+    //perform stat queries
+    auto stat_query_handler = stat_reader::QueryHandler::GetHandler(Dstream,
+                                                                    stat_input);
+    stat_query_handler->PerfomStatQueries(transport_catalogue);
 
     return 0;
 }

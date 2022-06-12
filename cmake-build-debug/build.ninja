@@ -168,8 +168,8 @@ build install/strip: phony CMakeFiles/install/strip.util
 
 build cmake_object_order_depends_target_Google_Tests_run: phony || cmake_object_order_depends_target_gtest cmake_object_order_depends_target_gtest_main
 
-build Google_tests/CMakeFiles/Google_Tests_run.dir/LoadParseQueries_Test.cpp.o: CXX_COMPILER__Google_Tests_run_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/Google_tests/LoadParseQueries_Test.cpp || cmake_object_order_depends_target_Google_Tests_run
-  DEP_FILE = Google_tests/CMakeFiles/Google_Tests_run.dir/LoadParseQueries_Test.cpp.o.d
+build Google_tests/CMakeFiles/Google_Tests_run.dir/Test1.cpp.o: CXX_COMPILER__Google_Tests_run_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/Google_tests/Test1.cpp || cmake_object_order_depends_target_Google_Tests_run
+  DEP_FILE = Google_tests/CMakeFiles/Google_Tests_run.dir/Test1.cpp.o.d
   FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
   INCLUDES = -isystem /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/Google_tests/lib/googletest/include -isystem /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/Google_tests/lib/googletest
   OBJECT_DIR = Google_tests/CMakeFiles/Google_Tests_run.dir
@@ -183,7 +183,7 @@ build Google_tests/CMakeFiles/Google_Tests_run.dir/LoadParseQueries_Test.cpp.o: 
 #############################################
 # Link the executable Google_tests/Google_Tests_run
 
-build Google_tests/Google_Tests_run: CXX_EXECUTABLE_LINKER__Google_Tests_run_Debug Google_tests/CMakeFiles/Google_Tests_run.dir/LoadParseQueries_Test.cpp.o | lib/libgtest.a lib/libgtest_main.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a
+build Google_tests/Google_Tests_run: CXX_EXECUTABLE_LINKER__Google_Tests_run_Debug Google_tests/CMakeFiles/Google_Tests_run.dir/Test1.cpp.o | lib/libgtest.a lib/libgtest_main.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a
   FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk
   LINK_LIBRARIES = lib/libgtest.a  lib/libgtest_main.a  lib/libgtest.a
   OBJECT_DIR = Google_tests/CMakeFiles/Google_Tests_run.dir

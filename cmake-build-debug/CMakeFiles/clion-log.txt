@@ -2,3 +2,4 @@
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/cmake-build-debug
+CMake File API: /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/cmake-build-debug: failed to load from '/Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/cmake-build-debug/.cmake/api/v1/reply/target-TransportCatalogue-Debug-6b5ffab31cff8af8eba2.json'
