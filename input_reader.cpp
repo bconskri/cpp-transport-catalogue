@@ -116,7 +116,7 @@ namespace input_reader {
         this->parse_perform_upload_queries(transport_catalogue, n);
     }
 
-    QueryHandler *QueryHandler::GetHandler(const io_type datasearch, std::istream &input = std::cin) {
+    QueryHandler *QueryHandler::GetHandler(const io_type datasearch, std::istream &input) {
         QueryHandler *p;
         switch (datasearch) {
             case Console:

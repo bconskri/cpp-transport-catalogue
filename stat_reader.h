@@ -72,6 +72,10 @@ namespace stat_reader {
         std::istream &input_;
 
         //write data from stream into catalogue
+        void OutputBusInfo(TransportCatalogue &transport_catalogue,
+                                        const std::string_view busname_to_output, Logger *output) const;
+        void OutputStopInfo(TransportCatalogue &transport_catalogue,
+                           const std::string_view stopname_to_output, Logger *output) const;
         void parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
                                         const int n, Logger *output = nullptr);
     };

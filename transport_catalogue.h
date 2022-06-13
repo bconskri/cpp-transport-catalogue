@@ -6,6 +6,7 @@
 #include <vector>
 #include <string_view>
 #include <string>
+#include <set>
 
 
 struct Stop {
@@ -67,6 +68,8 @@ public:
 
     [[nodiscard]] const RouteInfo *GetRouteInfo(const std::string_view route_name) const;
 
+    [[nodiscard]] std::set<std::string_view> GetBusesForStopInfo(const std::string_view stop_name) const;
+
 private:
     std::deque<Stop> stops_;                                                    //all stops data
     std::unordered_map<std::string_view, const Stop *> stopname_to_stop;         //hash-table for search stop by name
@@ -76,7 +79,8 @@ private:
     // Hasher for std::pair<Stop*, Stop*>
     struct PairStopsHasher {
     public:
-        std::size_t operator()([[maybe_unused]] const std::pair<const Stop *, const Stop *> pair_of_stops) const noexcept {
+        std::size_t
+        operator()([[maybe_unused]] const std::pair<const Stop *, const Stop *> pair_of_stops) const noexcept {
             //return std::size_t(pair_of_stops.first*37 + pair_of_stops.second);
             return 0; //FIXME
         }

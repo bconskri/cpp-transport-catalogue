@@ -3,15 +3,59 @@
 
 #include <queue>
 #include <iomanip>
+#include <set>
 
 namespace stat_reader {
-    void StreamData::parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
-                                                const int lcount, Logger* output) {
+    void StreamData::OutputStopInfo(TransportCatalogue &transport_catalogue,
+                                    const std::string_view stopname_to_output, Logger *output) const {
         using namespace std::literals;
 
-        std::queue<std::string> buses_to_output;
-        std::string line;
+        auto buses_for_stop = transport_catalogue.GetBusesForStopInfo(stopname_to_output);
+        std::ostringstream stream;
+        if (buses_for_stop.empty()) {
+            stream << "Stop "s << stopname_to_output << ": no buses"s << std::endl;
+            output->log(stream.str());
+        } else {
+            stream << "Stop "s << stopname_to_output << ": buses ";
+            bool first = true;
+            for (auto bus : buses_for_stop) {
+                if (first) {
+                    stream << bus;
+                    first = false;
+                } else {
+                    stream  << " "s << bus;
+                }
+            }
+            stream << std::endl;
+            output->log(stream.str());
+        }
+    }
 
+    void StreamData::OutputBusInfo(TransportCatalogue &transport_catalogue,
+                                   const std::string_view busname_to_output, Logger *output) const {
+        using namespace std::literals;
+        auto route = transport_catalogue.GetRouteInfo(busname_to_output);
+        //
+        if (route != nullptr) {
+            std::ostringstream stream;
+            stream << "Bus "s << route->name << ": " << route->stops_on_route << " stops on route, "s <<
+                   route->unique_stops << " unique stops, "s << std::setprecision(6) <<
+                   route->route_length << " route length"
+                   << std::endl;
+            output->log(stream.str());
+        } else {
+            std::ostringstream stream;
+            stream << "Bus "s << busname_to_output << ": not found" << std::endl;
+            output->log(stream.str());
+        }
+
+    }
+
+    void StreamData::parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
+                                                const int lcount, Logger *output) {
+        using namespace std::literals;
+
+        std::string line;
         for (int i = 0; i < lcount; ++i) {
             std::getline(input_, line, '\n');
             line = Trim(line);
@@ -23,40 +67,23 @@ namespace stat_reader {
                     const std::string query_data = std::string(Trim(line.substr(pos + 1, line.npos)));
                     //
                     if (query_type == "Bus"s) {
-                        buses_to_output.emplace(std::move(query_data));
+                        OutputBusInfo(transport_catalogue, std::move(query_data), output);
+
+                    } else if (query_type == "Stop"s) {
+                        OutputStopInfo(transport_catalogue, std::move(query_data), output);
 
                     } else {
                         throw ("Query_type/name parse error");
                     }
-                } else {
-                    throw ("That is not upload query");
                 }
-            }
-        }
-        //we processed all strings
-        //we added all stops
-        //now we need to process all routes from queue
-        while (!buses_to_output.empty()) {
-            auto name = buses_to_output.front();
-            auto route = transport_catalogue.GetRouteInfo(name);
-            //
-            if (route != nullptr) {
-                std::ostringstream stream;
-                stream << "Bus "s << route->name << ": " << route->stops_on_route << " stops on route, "s <<
-                       route->unique_stops << " unique stops, "s << std::setprecision(6) <<
-                       route->route_length << " route length"
-                       << std::endl;
-                output->log(stream.str());
             } else {
-                std::ostringstream stream;
-                stream << "Bus "s << name << ": not found" << std::endl;
-                output->log(stream.str());
+                throw ("That is not upload query");
             }
-            buses_to_output.pop();
         }
     }
 
-    void StreamData::PerfomStatQueries(TransportCatalogue &transport_catalogue, Logger* output) {
+
+    void StreamData::PerfomStatQueries(TransportCatalogue &transport_catalogue, Logger *output) {
         int n;
         std::string line;
         std::getline(input_, line, '\n');
@@ -81,20 +108,20 @@ namespace stat_reader {
         return p;
     }
 
-   Logger *Logger::GetLogger(const io_type datasearch, std::string file_name) {
-       Logger *p;
-       switch (datasearch) {
-           case Console:
-               p = new ConsoleLogger();
-               break;
+    Logger *Logger::GetLogger(const io_type datasearch, std::string file_name) {
+        Logger *p;
+        switch (datasearch) {
+            case Console:
+                p = new ConsoleLogger();
+                break;
 
-           case Txt:
-               p = new FileLogger(file_name);
-               break;
+            case Txt:
+                p = new FileLogger(file_name);
+                break;
 
-           default:
-               assert(false);
-       }
-       return p;
+            default:
+                assert(false);
+        }
+        return p;
     }
 }

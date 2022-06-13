@@ -18,7 +18,7 @@ namespace input_reader {
         virtual void PerfomUploadQueries(TransportCatalogue &transport_catalogue) = 0;
 
         //create loader from specified data search
-        static QueryHandler *GetHandler(const io_type datasearch, std::istream &input);
+        static QueryHandler *GetHandler(const io_type datasearch, std::istream &input = std::cin);
     };
 
     //realize StreamData query performerser
