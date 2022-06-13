@@ -6,8 +6,45 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <fstream>
 
 namespace stat_reader {
+
+    class Logger {
+    public:
+        virtual void log(const std::string_view &) = 0;
+
+        static Logger *GetLogger(const io_type datasearch, std::string file_name = "");
+    };
+
+    class ConsoleLogger : public Logger {
+    public:
+        void log(const std::string_view &msg) override {
+            std::cout << msg;
+        };
+    };
+
+    class FileLogger : public Logger {
+    public:
+        FileLogger(const std::string &filename) {
+            //std::ofstream file(filename);
+            //ofs. = &file;
+            ofs.open(filename);
+        }
+
+        ~FileLogger() {
+            if (ofs) {
+                ofs.close();
+            }
+        }
+
+        void log(const std::string_view &msg) override {
+            ofs << msg;
+        }
+
+    private:
+        std::ofstream ofs;
+    };
 
 //fabric of query performes
     class QueryHandler {
@@ -15,27 +52,27 @@ namespace stat_reader {
         virtual ~QueryHandler() = default;
 
         //make load queries from data search and perform write or read data to/from transport_catalogue
-        virtual void PerfomStatQueries(TransportCatalogue &transport_catalogue) = 0;
+        virtual void PerfomStatQueries(TransportCatalogue &transport_catalogue, Logger *output = nullptr) = 0;
 
         //create loader from specified data search
-        static QueryHandler *GetHandler(const io_type datasearch, std::istream &input);
+        static QueryHandler *GetHandler(const io_type datasearch, std::istream &input = std::cin);
     };
 
 //realize StreamData query performerser
     class StreamData : public QueryHandler {
     public:
         StreamData(std::istream &input = std::cin)
-                : input_(input), output_(std::cout) {}
+                : input_(input) {}
+
 
         //realize loader from stream
-        void PerfomStatQueries(TransportCatalogue &transport_catalogue);
+        void PerfomStatQueries(TransportCatalogue &transport_catalogue, Logger *output = nullptr);
 
     private:
         std::istream &input_;
-        [[maybe_unused]] std::ostream &output_;
 
         //write data from stream into catalogue
         void parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
-                                          const int n);
+                                        const int n, Logger *output = nullptr);
     };
 }

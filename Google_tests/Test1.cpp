@@ -12,26 +12,27 @@ TEST(Test1, Test1
 ) {
 
 std::istringstream input{
-        "3\n"
-        "Stop Tolstopaltsevo: 55.611087, 37.208290\n"
+        "  3  \n"
+        " Bus   750 long  : Tolstopaltsevo 2    -   Marushkino  \n"
+        "Stop   Tolstopaltsevo 2 : 55.611087 , 37.208290\n"
         "Stop Marushkino: 55.595884, 37.209755\n"
-        "Bus 750: Tolstopaltsevo - Marushkino\n"
 };
 
 TransportCatalogue transport_catalogue{};
 //perform upload queries
-auto upload_query_handler = input_reader::QueryHandler::GetHandler(Dstream,
+auto upload_query_handler = input_reader::QueryHandler::GetHandler(Console,
                                                                    input);
 upload_query_handler->
 PerfomUploadQueries(transport_catalogue);
 
 std::istringstream stat_input{
-        "1\n"
-        "Bus 750\n"
+        " 2 \n"
+        "  Bus    750 long  \n"
+        "  Bus    Gazel new  \n"
 };
 
 //perform stat queries
-auto stat_query_handler = stat_reader::QueryHandler::GetHandler(Dstream,
+auto stat_query_handler = stat_reader::QueryHandler::GetHandler(Console,
                                                                 stat_input);
 stat_query_handler->
 PerfomStatQueries(transport_catalogue);

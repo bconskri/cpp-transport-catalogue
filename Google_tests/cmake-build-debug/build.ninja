@@ -49,8 +49,8 @@ cmake_ninja_workdir = /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/Tra
 
 build cmake_object_order_depends_target_Google_Tests_run: phony || cmake_object_order_depends_target_gtest cmake_object_order_depends_target_gtest_main
 
-build CMakeFiles/Google_Tests_run.dir/LoadParseQueries_Test.o: CXX_COMPILER__Google_Tests_run_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/Google_tests/LoadParseQueries_Test.cpp || cmake_object_order_depends_target_Google_Tests_run
-  DEP_FILE = CMakeFiles/Google_Tests_run.dir/LoadParseQueries_Test.o.d
+build CMakeFiles/Google_Tests_run.dir/Test1.o: CXX_COMPILER__Google_Tests_run_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/Google_tests/Test1.cpp || cmake_object_order_depends_target_Google_Tests_run
+  DEP_FILE = CMakeFiles/Google_Tests_run.dir/Test1.o.d
   FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++11
   INCLUDES = -isystem /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/Google_tests/lib/googletest/include -isystem /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/Google_tests/lib/googletest
   OBJECT_DIR = CMakeFiles/Google_Tests_run.dir
@@ -64,9 +64,10 @@ build CMakeFiles/Google_Tests_run.dir/LoadParseQueries_Test.o: CXX_COMPILER__Goo
 #############################################
 # Link the executable Google_Tests_run
 
-build Google_Tests_run: CXX_EXECUTABLE_LINKER__Google_Tests_run_Debug CMakeFiles/Google_Tests_run.dir/LoadParseQueries_Test.o | lib/libgtest.a lib/libgtest_main.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a
+build Google_Tests_run: CXX_EXECUTABLE_LINKER__Google_Tests_run_Debug CMakeFiles/Google_Tests_run.dir/Test1.o | lib/libgtest.a lib/libgtest_main.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a
   FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk
-  LINK_LIBRARIES = lib/libgtest.a  lib/libgtest_main.a  lib/libgtest.a
+  LINK_LIBRARIES = lib/libgtest.a  lib/libgtest_main.a  -l../input_reader.h  -l../stat_reader.h  -l../transport_catalogue.h  lib/libgtest.a
+  LINK_PATH = -L/Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/Google_tests/cmake-build-debug/lib
   OBJECT_DIR = CMakeFiles/Google_Tests_run.dir
   POST_BUILD = :
   PRE_LINK = :

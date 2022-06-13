@@ -10,7 +10,7 @@
 #include <sstream>
 
 enum io_type {
-    Dstream = 0, Json, Xml
+    Console = 0, Txt, Json, Xml
 };
 
 inline std::string_view Ltrim(std::string_view str) {

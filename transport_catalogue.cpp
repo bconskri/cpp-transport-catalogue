@@ -36,7 +36,8 @@ void TransportCatalogue::AddRoute(BusRoute &&route) {
         if (ref.stops.size() > 1) {
             for (size_t i = 0; i < ref.stops.size() - 1; ++i) {
                 auto calc = ComputeDistance(ref.stops[i]->coords, ref.stops[i + 1]->coords);
-                std::cerr << std::setprecision(6)  << calc << std::endl;
+                //std::cout << ref.stops[i]->name << " " << ref.stops[i + 1]->name << " distance " << calc <<std::endl;
+                //std::cerr << std::setprecision(6)  << calc << std::endl;
                 ref.route_length += calc;
                 //std::cerr << std::setprecision(6)  << ref.route_length << std::endl;
             }

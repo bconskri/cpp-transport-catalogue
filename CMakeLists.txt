@@ -10,4 +10,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Wstrict-overflo
 
 add_executable(TransportCatalogue main.cpp geo.h input_reader.cpp input_reader.h stat_reader.cpp stat_reader.h transport_catalogue.cpp transport_catalogue.h utilities.h)
 
-add_subdirectory(Google_tests)
+#add_subdirectory(Google_tests)

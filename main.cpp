@@ -1,5 +1,3 @@
-// напишите решение с нуля
-// код сохраните в свой git-репозиторий
 //#include "gtest/gtest.h"
 #include "input_reader.h"
 #include "stat_reader.h"
@@ -7,6 +5,7 @@
 #include "utilities.h"
 
 #include <sstream>
+#include <fstream>
 
 int main() {
     std::istringstream input{
@@ -15,6 +14,7 @@ int main() {
             "Stop Marushkino: 55.595884, 37.209755\n"
             "Bus 256: Biryulyovo Zapadnoye > Biryusinka > Universam > Biryulyovo Tovarnaya > Biryulyovo Passazhirskaya > Biryulyovo Zapadnoye\n"
             "Bus 750: Tolstopaltsevo - Marushkino - Rasskazovka\n"
+            "Stop Rasskazovka: 55.632761, 37.333324\n"
             "Stop Biryulyovo Zapadnoye: 55.574371, 37.651700\n"
             "Stop Biryusinka: 55.581065, 37.648390\n"
             "Stop Universam: 55.587655, 37.645687\n"
@@ -24,7 +24,7 @@ int main() {
 
     TransportCatalogue transport_catalogue{};
     //perform upload queries
-    auto upload_query_handler = input_reader::QueryHandler::GetHandler(Dstream,
+    auto upload_query_handler = input_reader::QueryHandler::GetHandler(Console,
                                                                        input);
     upload_query_handler->PerfomUploadQueries(transport_catalogue);
 
@@ -36,7 +36,7 @@ int main() {
     };
 
     //perform stat queries
-    auto stat_query_handler = stat_reader::QueryHandler::GetHandler(Dstream,
+    auto stat_query_handler = stat_reader::QueryHandler::GetHandler(Console,
                                                                     stat_input);
     stat_query_handler->PerfomStatQueries(transport_catalogue);
 

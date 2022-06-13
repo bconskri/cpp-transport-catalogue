@@ -25,14 +25,13 @@ namespace input_reader {
     class StreamData : public QueryHandler {
     public:
         StreamData(std::istream &input = std::cin)
-                : input_(input), output_(std::cout) {}
+                : input_(input) {}
 
         //realize loader from stream
         void PerfomUploadQueries(TransportCatalogue &transport_catalogue);
 
     private:
         std::istream &input_;
-        [[maybe_unused]] std::ostream &output_;
 
         //write data from stream into catalogue
         void parse_perform_upload_queries(TransportCatalogue &transport_catalogue,

@@ -107,8 +107,11 @@ namespace input_reader {
 
     void StreamData::PerfomUploadQueries(TransportCatalogue &transport_catalogue) {
         int n;
-        this->input_ >> n;
-        this->input_.ignore(1);
+//        this->input_ >> n;
+//        this->input_.ignore(1);
+        std::string line;
+        std::getline(input_, line, '\n');
+        n = std::stoi(std::string(Trim(line)));
 
         this->parse_perform_upload_queries(transport_catalogue, n);
     }
@@ -116,7 +119,7 @@ namespace input_reader {
     QueryHandler *QueryHandler::GetHandler(const io_type datasearch, std::istream &input = std::cin) {
         QueryHandler *p;
         switch (datasearch) {
-            case Dstream:
+            case Console:
                 p = new StreamData(input);
                 break;
 
