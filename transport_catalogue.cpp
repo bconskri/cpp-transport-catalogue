@@ -74,12 +74,12 @@ const RouteInfo *TransportCatalogue::GetRouteInfo(const std::string_view route_n
     );
 }
 
-std::set<std::string_view> TransportCatalogue::GetBusesForStopInfo(const std::string_view stop_name) const {
+std::optional<std::set<std::string_view>> TransportCatalogue::GetBusesForStopInfo(const std::string_view stop_name) const {
     auto ptr = GetStopByName(stop_name);
-    if (ptr == nullptr) {
-        return {};
-    }
     std::set<std::string_view> found_buses;
+    if (ptr == nullptr) {
+        return std::nullopt;
+    }
     for (const auto &bus: busname_to_bus) {
         auto tmp = std::find_if(bus.second->stops.begin(), bus.second->stops.end(),
                                 [stop_name](const Stop *stop) {

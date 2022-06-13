@@ -68,7 +68,7 @@ public:
 
     [[nodiscard]] const RouteInfo *GetRouteInfo(const std::string_view route_name) const;
 
-    [[nodiscard]] std::set<std::string_view> GetBusesForStopInfo(const std::string_view stop_name) const;
+    [[nodiscard]] std::optional<std::set<std::string_view>> GetBusesForStopInfo(const std::string_view stop_name) const;
 
 private:
     std::deque<Stop> stops_;                                                    //all stops data

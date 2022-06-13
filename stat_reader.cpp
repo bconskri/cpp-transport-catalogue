@@ -10,15 +10,16 @@ namespace stat_reader {
                                     const std::string_view stopname_to_output, Logger *output) const {
         using namespace std::literals;
 
-        auto buses_for_stop = transport_catalogue.GetBusesForStopInfo(stopname_to_output);
+        std::optional<std::set<std::string_view>> buses_for_stop = transport_catalogue.GetBusesForStopInfo(stopname_to_output);
         std::ostringstream stream;
-        if (buses_for_stop.empty()) {
+        if (buses_for_stop == std::nullopt) {
+            stream << "Stop "s << stopname_to_output << ": not found"s << std::endl;
+        } else if (buses_for_stop->empty()) {
             stream << "Stop "s << stopname_to_output << ": no buses"s << std::endl;
-            output->log(stream.str());
         } else {
             stream << "Stop "s << stopname_to_output << ": buses ";
             bool first = true;
-            for (auto bus : buses_for_stop) {
+            for (auto bus : *buses_for_stop) {
                 if (first) {
                     stream << bus;
                     first = false;
@@ -27,8 +28,8 @@ namespace stat_reader {
                 }
             }
             stream << std::endl;
-            output->log(stream.str());
         }
+        output->log(stream.str());
     }
 
     void StreamData::OutputBusInfo(TransportCatalogue &transport_catalogue,

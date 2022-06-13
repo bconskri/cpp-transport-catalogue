@@ -23,3 +23,10 @@
 2493	2591	1655135177236020706	TransportCatalogue	22e7aff037bbb223
 4	4508	1655135278298761534	CMakeFiles/TransportCatalogue.dir/stat_reader.cpp.o	94dd29c871ec4261
 4508	4656	1655135278458324087	TransportCatalogue	22e7aff037bbb223
+4	7676	1655136211773769913	CMakeFiles/TransportCatalogue.dir/main.cpp.o	94015631dc8b6b70
+4	17030	1655136221122163678	CMakeFiles/TransportCatalogue.dir/input_reader.cpp.o	46dcc3c7f9a67a36
+8	4538	1655136376232244986	CMakeFiles/TransportCatalogue.dir/transport_catalogue.cpp.o	bcbce0467809d812
+8	3639	1655136472458997345	CMakeFiles/TransportCatalogue.dir/stat_reader.cpp.o	94dd29c871ec4261
+3639	3796	1655136472608434313	TransportCatalogue	22e7aff037bbb223
+5	1981	1655136796400917815	CMakeFiles/TransportCatalogue.dir/stat_reader.cpp.o	94dd29c871ec4261
+1981	2103	1655136796526895331	TransportCatalogue	22e7aff037bbb223
