@@ -21,7 +21,7 @@ std::ostream& PrintMap(std::ostream& os, const Map& m) {
             os << ", ";
         }
         first = false;
-        os << kv.first << ": " << kv.second;
+        os << kv.first.first->name << "-" << kv.first.second->name << ": " << kv.second << std::endl;
     }
     return os << "}";
 }

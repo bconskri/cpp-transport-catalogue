@@ -41,7 +41,7 @@ namespace stat_reader {
             std::ostringstream stream;
             stream << "Bus "s << route->name << ": " << route->stops_on_route << " stops on route, "s <<
                    route->unique_stops << " unique stops, "s << std::setprecision(6) <<
-                   route->route_length << " route length"
+                   route->route_length_meters << " route length, " << route->curvature << " curvature"s
                    << std::endl;
             output->log(stream.str());
         } else {
@@ -65,7 +65,7 @@ namespace stat_reader {
                 const size_t pos = line.find_first_of(' ');
                 if (pos != line.npos) { //: found - that is upload query
                     const std::string query_type = line.substr(0, pos);
-                    const std::string query_data = std::string(Trim(line.substr(pos + 1, line.npos)));
+                    const std::string query_data = Trim(line.substr(pos + 1, line.npos));
                     //
                     if (query_type == "Bus"s) {
                         OutputBusInfo(transport_catalogue, std::move(query_data), output);
@@ -88,7 +88,7 @@ namespace stat_reader {
         int n;
         std::string line;
         std::getline(input_, line, '\n');
-        n = std::stoi(std::string(Trim(line)));
+        n = std::stoi(Trim(line));
 
         if (output == nullptr) {
             output = new ConsoleLogger();

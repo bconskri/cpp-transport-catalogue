@@ -13,19 +13,37 @@ enum io_type {
     Console = 0, Txt, Json, Xml
 };
 
-inline std::string_view Ltrim(std::string_view str) {
+inline std::string Ltrim(std::string& str) {
     const auto pos(str.find_first_not_of(" \t\n\r\f\v"));
-    str.remove_prefix(std::min(pos, str.length()));
+    str.erase(0, std::min(pos, str.length()));
     return str;
 }
 
-inline std::string_view Rtrim(std::string_view str) {
+inline std::string Ltrim(std::string&& str) {
+    const auto pos(str.find_first_not_of(" \t\n\r\f\v"));
+    str.erase(0, std::min(pos, str.length()));
+    return str;
+}
+
+inline std::string Rtrim(std::string& str) {
     const auto pos(str.find_last_not_of(" \t\n\r\f\v"));
-    str.remove_suffix(std::min(str.length() - pos - 1, str.length()));
+    str.erase(pos+1);
     return str;
 }
 
-inline std::string_view Trim(std::string_view str) {
+inline std::string Rtrim(std::string&& str) {
+    const auto pos(str.find_last_not_of(" \t\n\r\f\v"));
+    str.erase(pos + 1);
+    return str;
+}
+
+inline std::string Trim(std::string&& str) {
+    str = Ltrim(str);
+    str = Rtrim(str);
+    return str;
+}
+
+inline std::string Trim(std::string& str) {
     str = Ltrim(str);
     str = Rtrim(str);
     return str;
