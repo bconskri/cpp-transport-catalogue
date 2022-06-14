@@ -7,7 +7,7 @@
 #include <string_view>
 #include <string>
 #include <set>
-
+#include <functional>
 
 struct Stop {
     Stop() = default;
@@ -39,7 +39,7 @@ struct BusRoute {
      */
     double route_length_geo = 0L;
     //length of route in meters by roads
-    size_t route_length_meters = 0U;
+    double route_length_meters = 0L;
     //извилистость, то есть отношение фактической длины маршрута к географическому расстоянию
     double curvature = 0L;
     //circle or not route
@@ -47,7 +47,7 @@ struct BusRoute {
 };
 
 struct RouteInfo {
-    explicit RouteInfo(std::string_view name, size_t stops_count, size_t unique_stops, int64_t route_length,
+    explicit RouteInfo(std::string_view name, size_t stops_count, size_t unique_stops, double route_length,
                        double curvature)
             : name(name), stops_on_route(stops_count), unique_stops(unique_stops), route_length_meters(route_length),
               curvature(curvature) {
@@ -57,7 +57,7 @@ struct RouteInfo {
     std::string name;
     size_t stops_on_route = 0U;      //R — количество остановок в маршруте автобуса от stop1 до stop1 включительно.
     size_t unique_stops = 0U;        //количество уникальных остановок, на которых останавливается автобус.
-    int64_t route_length_meters = 0L;       // длина маршрута в метрах.
+    double route_length_meters = 0L;       // длина маршрута в метрах.
     double curvature = 0L;          //извилистость, то есть отношение фактической длины маршрута к географическому расстоянию
 };
 
@@ -79,18 +79,7 @@ public:
 
     [[nodiscard]] std::optional<std::set<std::string_view>> GetBusesForStopInfo(const std::string_view stop_name) const;
 
-    [[nodiscard]] size_t GetDistance(const Stop *stop_from, const Stop *stop_to);
-
-    struct PairStopsHasher {
-    public:
-        std::size_t
-        operator()([[maybe_unused]] const std::pair<const Stop *, const Stop *> pair_of_stops) const noexcept {
-            //return std::size_t(pair_of_stops.first*37 + pair_of_stops.second);
-            return 0; //FIXME
-        }
-    };
-
-    std::unordered_map<std::pair<const Stop *, const Stop *>, int, PairStopsHasher> distances_to_stops_;  //Hash stop to stop distance
+    [[nodiscard]] double GetDistance(const Stop *stop_from, const Stop *stop_to);
 
 private:
     std::deque<Stop> stops_;                                                    //all stops data
@@ -99,14 +88,15 @@ private:
     std::unordered_map<std::string_view, const BusRoute *> busname_to_bus;       //hash-table for search bus by name
 
     // Hasher for std::pair<Stop*, Stop*>
-//    struct PairStopsHasher {
-//    public:
-//        std::size_t
-//        operator()([[maybe_unused]] const std::pair<const Stop *, const Stop *> pair_of_stops) const noexcept {
-//            //return std::size_t(pair_of_stops.first*37 + pair_of_stops.second);
-//            return 0; //FIXME
-//        }
-//    };
+    struct PairStopsHasher {
+    public:
+        std::size_t operator()(const std::pair<const Stop *, const Stop *> pair_of_stops) const noexcept {
+            auto ptr1 = const_cast<Stop *>(pair_of_stops.first);
+            auto ptr2 = const_cast<Stop *>(pair_of_stops.second);
+            return (std::hash<Stop *>{}(ptr1) * 37) +
+                   std::hash<Stop *>{}(ptr2);
+        }
+    };
 
-//    std::unordered_map<std::pair<const Stop *, const Stop *>, int, PairStopsHasher> distances_to_stops;  //Hash stop to stop distance
+    std::unordered_map<std::pair<const Stop *, const Stop *>, double, PairStopsHasher> distances_to_stops_;  //Hash stop to stop distance
 };

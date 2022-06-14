@@ -37,7 +37,8 @@ namespace input_reader {
         //write data from stream into catalogue
         void parse_perform_upload_queries(TransportCatalogue &transport_catalogue,
                                           const int n);
+
         void PerformStopDistanceUpload(TransportCatalogue &transport_catalogue,
-                                       std::queue<std::pair<std::string, std::string>>& from_to_distances);
+                                       std::queue<std::pair<std::string, std::string>> &from_to_distances);
     };
 }

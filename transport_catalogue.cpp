@@ -8,7 +8,6 @@ void TransportCatalogue::AddStop(Stop &&stop) {
         auto &ref = stops_.emplace_back(std::move(stop));
         stopname_to_stop.insert({std::string_view(ref.name), &ref});
     }
-
 }
 
 void TransportCatalogue::AddRoute(BusRoute &&route) {
@@ -33,6 +32,7 @@ void TransportCatalogue::AddRoute(BusRoute &&route) {
 
         //calc route length
         ref.route_length_geo = 0L;
+        ref.route_length_meters = 0L;
         if (ref.stops.size() > 1) {
             for (size_t i = 0; i < ref.stops.size() - 1; ++i) {
                 auto from = ref.stops[i]->name;
@@ -101,14 +101,14 @@ TransportCatalogue::GetBusesForStopInfo(const std::string_view stop_name) const 
     return found_buses;
 }
 
-size_t TransportCatalogue::GetDistance(const Stop *stop_from, const Stop *stop_to) {
+double TransportCatalogue::GetDistance(const Stop *stop_from, const Stop *stop_to) {
     if (distances_to_stops_.count(std::pair{stop_from, stop_to}) > 0) {
-        auto tmp = distances_to_stops_.at(std::pair{stop_from, stop_to});
+        //auto tmp = distances_to_stops_.at(std::pair{stop_from, stop_to});
         return distances_to_stops_.at(std::pair{stop_from, stop_to});
     } else {
         // нет прямого расстояния - берем обратное
         if (distances_to_stops_.count(std::pair{stop_to, stop_from}) > 0) {
-            auto tmp = distances_to_stops_.at(std::pair{stop_to, stop_from});
+            //auto tmp = distances_to_stops_.at(std::pair{stop_to, stop_from});
             return distances_to_stops_.at(std::pair{stop_to, stop_from});
         } else {
             return 0U;
