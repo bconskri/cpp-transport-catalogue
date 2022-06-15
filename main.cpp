@@ -1,8 +1,8 @@
 //#include "gtest/gtest.h"
-#include "input_reader.h"
-#include "stat_reader.h"
-#include "transport_catalogue.h"
-#include "geo.h"
+#include "transport-catalogue/input_reader.h"
+#include "transport-catalogue/stat_reader.h"
+#include "transport-catalogue/transport_catalogue.h"
+#include "transport-catalogue/geo.h"
 
 #include <sstream>
 #include <fstream>
