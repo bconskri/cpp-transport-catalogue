@@ -276,3 +276,18 @@ Bus 751: not found
 Stop Samara: not found
 Stop Prazhskaya: no buses
 Stop Biryulyovo Zapadnoye: buses 256 828 
+
+
+
+Bus F3fEY0kxaFt7PU64I6hFsj3k: vmfhU5 > gM03rJmbMvpry1xapzBrd > LFuHGKzSawoJVECgYmd0p > 28nKQoZ3 > 5 > ozsthaZOjDsByqyS > vmfhU5
+594338m to gM03rJmbMvpry1xapzBrd
+742974m to LFuHGKzSawoJVECgYmd0p
+283502m to 28nKQoZ3
+472269m to 5
+507991m to ozsthaZOjDsByqyS
+31051m to vmfhU5
+Сумма: 2632125
+
+"Bus F3fEY0kxaFt7PU64I6hFsj3k: 7 stops on route, 6 unique stops, 2.63212e+06 route length, 25.0326 curvature\n"
+
+Stop S4N9qLVSDR x1: 38.496052, 34.70997, 502711m to wjASCROazWwm4qA5SOyEt, 583868m to QNdfxXLZ7airqT, 315703m to GY3rAuh8khVusRZfe5pgY qjy, 788925m to vpkOA, 484341m to l1JcX, 861745m to ryITU LzkqtWG1XZL4JC, 981703m to DJysYIMMuFfHBv135OzRG7, 783006m to rGc, 401163m to nd002gJlD, 234031m to us67xQRLIgk1uK, 401017m to ioznuMu8L, 190948m to maRzEPk7AXx0exk0i8YK, 99271m to bEOPibu, 268075m to 29BVZXLT8ylhfI3AHgN, 634148m to Mvk, 139214m to kX7TQpIwVa, 34443m to BsLmeOvXn6p, 333345m to c3m0muHJlfOgV0ZCqS, 312292m to GyC3d u aQz, 539645m to c8rcol2h8OLL fFklbvTqi, 915787m to 07uk4i, 411884m to uD, 200383m to sA2bi9Ro7dzetK, 381277m to feJErVPQH8rOp, 657361m to jZp, 392945m to XFFFF s9uXSsufVNGp, 863562m to 9kur0oh, 502729m to L1VyYDA3G, 537388m to zt uX M e86dDFQ, 22971m to GQQogZKjIyOqYTOzArGYVXp, 163797m to F2DJX2Eret91z ClHvxZvbYc5, 809430m to THjyZkJSOdq, 848312m to HBD, 545530m to beFFfpwobYF7iEIHR2 Z6N3J, 240300m to oGfxOH3j9A HWu0WMo, 529744m to g70xS6a4yk7sj, 482294m to KpTRT01Q7uag, 915323m to M0rMtllH BRRg6isWZVOWLrk8, 600451m to Wn6L7uZUzHy9evZSOu, 832416m to mquYY9ufXNsPEfB4, 698595m to RY, 856119m to S8TOEPZxi r3AcxFe

@@ -51,25 +51,25 @@ build cmake_object_order_depends_target_TransportCatalogue: phony || CMakeFiles/
 
 build CMakeFiles/TransportCatalogue.dir/main.cpp.o: CXX_COMPILER__TransportCatalogue_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/main.cpp || cmake_object_order_depends_target_TransportCatalogue
   DEP_FILE = CMakeFiles/TransportCatalogue.dir/main.cpp.o.d
-  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
+  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir
 
 build CMakeFiles/TransportCatalogue.dir/input_reader.cpp.o: CXX_COMPILER__TransportCatalogue_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/input_reader.cpp || cmake_object_order_depends_target_TransportCatalogue
   DEP_FILE = CMakeFiles/TransportCatalogue.dir/input_reader.cpp.o.d
-  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
+  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir
 
 build CMakeFiles/TransportCatalogue.dir/stat_reader.cpp.o: CXX_COMPILER__TransportCatalogue_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/stat_reader.cpp || cmake_object_order_depends_target_TransportCatalogue
   DEP_FILE = CMakeFiles/TransportCatalogue.dir/stat_reader.cpp.o.d
-  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
+  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir
 
 build CMakeFiles/TransportCatalogue.dir/transport_catalogue.cpp.o: CXX_COMPILER__TransportCatalogue_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/transport_catalogue.cpp || cmake_object_order_depends_target_TransportCatalogue
   DEP_FILE = CMakeFiles/TransportCatalogue.dir/transport_catalogue.cpp.o.d
-  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
+  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir
 
@@ -82,7 +82,7 @@ build CMakeFiles/TransportCatalogue.dir/transport_catalogue.cpp.o: CXX_COMPILER_
 # Link the executable TransportCatalogue
 
 build TransportCatalogue: CXX_EXECUTABLE_LINKER__TransportCatalogue_Debug CMakeFiles/TransportCatalogue.dir/main.cpp.o CMakeFiles/TransportCatalogue.dir/input_reader.cpp.o CMakeFiles/TransportCatalogue.dir/stat_reader.cpp.o CMakeFiles/TransportCatalogue.dir/transport_catalogue.cpp.o
-  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk
+  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   POST_BUILD = :
   PRE_LINK = :

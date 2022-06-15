@@ -18,7 +18,7 @@ namespace geo {
         }
     };
 
-    inline double ComputeDistance(const Coordinates from,  const Coordinates to) {
+    inline double ComputeDistance(const Coordinates from, const Coordinates to) {
         using namespace std;
         if (from == to) {
             return 0;
@@ -28,4 +28,26 @@ namespace geo {
                     + cos(from.lat * dr) * cos(to.lat * dr) * cos(abs(from.lng - to.lng) * dr))
                * 6371000;
     }
+}
+
+enum io_type {
+    Console = 0, Txt, Json, Xml
+};
+
+inline std::string_view Ltrim(std::string_view str) {
+    const auto pos(str.find_first_not_of(" \t\n\r\f\v"));
+    str.remove_prefix(std::min(pos, str.length()));
+    return str;
+}
+
+inline std::string_view Rtrim(std::string_view str) {
+    const auto pos(str.find_last_not_of(" \t\n\r\f\v"));
+    str.remove_suffix(std::min(str.length() - pos - 1, str.length()));
+    return str;
+}
+
+inline std::string_view Trim(std::string_view str) {
+    str = Ltrim(str);
+    str = Rtrim(str);
+    return str;
 }

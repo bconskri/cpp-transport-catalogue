@@ -4,6 +4,7 @@
 #include <queue>
 #include <iomanip>
 #include <set>
+#include <sstream>
 
 namespace stat_reader {
     void StreamData::OutputStopInfo(TransportCatalogue &transport_catalogue,
@@ -41,16 +42,15 @@ namespace stat_reader {
         if (route != nullptr) {
             std::ostringstream stream;
             stream << "Bus "s << route->name << ": " << route->stops_on_route << " stops on route, "s <<
-                   route->unique_stops << " unique stops, "s << std::setprecision(6) <<
-                   route->route_length_meters << " route length, " << route->curvature << " curvature"s
-                   << std::endl;
+                   route->unique_stops << " unique stops, "s << std::fixed << std::setprecision(6) <<
+                   route->route_length_meters << " route length, " << std::fixed << std::setprecision(6)
+                   << route->curvature << " curvature"s << std::endl;
             output->log(stream.str());
         } else {
             std::ostringstream stream;
             stream << "Bus "s << busname_to_output << ": not found" << std::endl;
             output->log(stream.str());
         }
-
     }
 
     void StreamData::parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
@@ -58,21 +58,22 @@ namespace stat_reader {
         using namespace std::literals;
 
         std::string line;
+        std::string_view line_to_parse;
         for (int i = 0; i < lcount; ++i) {
             std::getline(input_, line, '\n');
-            line = Trim(line);
-            if (!line.empty()) {
+            line_to_parse = Trim(line);
+            if (!line_to_parse.empty()) {
                 //split into two parts devide by _
-                const size_t pos = line.find_first_of(' ');
+                const size_t pos = line_to_parse.find_first_of(' ');
                 if (pos != line.npos) { //: found - that is upload query
-                    const std::string query_type = line.substr(0, pos);
-                    const std::string query_data = Trim(line.substr(pos + 1, line.npos));
+                    auto query_type = line_to_parse.substr(0, pos);
+                    auto query_data = Trim(line_to_parse.substr(pos + 1, line_to_parse.npos));
                     //
-                    if (query_type == "Bus"s) {
-                        OutputBusInfo(transport_catalogue, std::move(query_data), output);
+                    if (query_type == "Bus"sv) {
+                        OutputBusInfo(transport_catalogue, query_data, output);
 
-                    } else if (query_type == "Stop"s) {
-                        OutputStopInfo(transport_catalogue, std::move(query_data), output);
+                    } else if (query_type == "Stop"sv) {
+                        OutputStopInfo(transport_catalogue, query_data, output);
 
                     } else {
                         throw ("Query_type/name parse error");
@@ -86,15 +87,14 @@ namespace stat_reader {
 
 
     void StreamData::PerfomStatQueries(TransportCatalogue &transport_catalogue, Logger *output) {
-        int n;
-        std::string line;
-        std::getline(input_, line, '\n');
-        n = std::stoi(Trim(line));
+        int queries_count;
+        this->input_ >> queries_count;
+        this->input_.ignore(1);
 
         if (output == nullptr) {
             output = new ConsoleLogger();
         }
-        this->parse_perform_stat_queries(transport_catalogue, n, output);
+        this->parse_perform_stat_queries(transport_catalogue, queries_count, output);
     }
 
     QueryHandler *QueryHandler::GetHandler(const io_type datasearch, std::istream &input) {

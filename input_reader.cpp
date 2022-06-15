@@ -1,183 +1,135 @@
-// напишите решение с нуля
-// код сохраните в свой git-репозиторий
 #include "input_reader.h"
 
 #include <queue>
 #include <string_view>
 #include <string>
+#include <sstream>
 
 namespace input_reader {
-    void
-    StreamData::PerformStopDistanceUpload(TransportCatalogue &transport_catalogue,
-                                          std::queue<std::pair<std::string, std::string>> &from_to_distances) {
-        using namespace std::literals;
 
-        //int i=1;
-        while (!from_to_distances.empty()) {
-            //std::cerr << "Perform distance: " << i++ << std::endl;
-            auto elem = from_to_distances.front();
-            //
-            auto from_stop = transport_catalogue.GetStopByName(elem.first);
-            if (from_stop == nullptr) {
-                throw ("Error adding distance. Stop from doesn't added");
-            }
+    std::pair<std::string, unsigned> ParseDistanceToStop(std::string_view line) {
+        auto pos = line.find_first_of('m');
+        unsigned meters = std::stoi(std::string(line.substr(0, pos)));
 
-            auto distances = SplitByChar(std::string(elem.second), ',');
+        pos = line.find_first_not_of(' ', pos + 1);
+        line.remove_prefix(pos + 3);
 
-            for (auto dist: distances) {
-                const size_t pos = dist.find_first_of('m');
-                if (pos != dist.npos) {
-                    const auto meters = Rtrim(dist.substr(0, pos));
-                    auto stop_name = Rtrim(dist.substr(pos + 1, dist.npos));
-                    auto pos = stop_name.find("to"s);
-                    stop_name = Ltrim(stop_name.substr(pos + 3, dist.npos));
-                    const Stop *to_stop = transport_catalogue.GetStopByName(stop_name);
-                    if (to_stop == nullptr) {
-                        throw ("Error adding distance. Stop to doesn't added");
-                    }
-                    auto t = std::stoi(meters);
-                    //std::cout << "From " << from_stop->name << " to " << to_stop->name << " m " << meters << std::endl;
-                    transport_catalogue.AddDistance(from_stop, to_stop, static_cast<size_t>(t));
-                }
-            }
-            //
-            from_to_distances.pop();
-        }
-        std::cerr << "Distance performing finish" << std::endl;
+        return std::make_pair(std::string(Ltrim(line.substr(0,
+                                                            line.npos))), meters);
     }
 
-    void StreamData::parse_perform_upload_queries(TransportCatalogue &transport_catalogue,
-                                                  const int lcount) {
-        using namespace std::literals;
-
-        std::queue<std::pair<std::string, std::string>> routes_to_add;
-        std::queue<std::pair<std::string, std::string>> from_to_distances;
+    std::istream &operator>>(std::istream &input, BusStop &bus_stop) {
         std::string line;
+        std::getline(input, line);
 
-        for (int i = 0; i < lcount; ++i) {
-            //std::cerr << "Perform query: " << i << std::endl;
-            std::getline(input_, line, '\n');
-            line = Trim(line);
-            if (!line.empty()) {
-                //splitinto twi parts devide by :
-                const size_t pos_colon = line.find_first_of(':');
-                if (pos_colon != line.npos) { //: found - that is upload query
-                    const auto query_type_name = line.substr(0, pos_colon);
-                    const auto query_data = line.substr(pos_colon + 1, line.npos);
-                    //
-                    //split into two parts devide by " " for name extruction
-                    const size_t pos_space = query_type_name.find_first_of(' ');
-                    if (pos_space != line.npos) {
-                        const auto query_type = query_type_name.substr(0, pos_space);
-                        const auto name =
-                                std::string(Trim(query_type_name.substr(pos_space + 1, query_type_name.npos)));
-                        //
-                        if (query_type == "Stop"s) {
-                            //we have query to add stop
-                            // we neeed to parse coordinates
-                            //split into two parts devide by ","
-                            const size_t pos_comma = query_data.find_first_of(',');
-                            if (pos_comma != line.npos) {
-                                Stop stop_to_upload;
-                                stop_to_upload.name = std::move(name);
-                                stop_to_upload.coords.lat = std::stod(
-                                        Rtrim(query_data.substr(0, pos_comma)));
-                                //проверим если можно рассплитовать правую часть по запятым, значит есть расстояния
-                                auto lng_string = Ltrim(query_data.substr(pos_comma + 1, line.npos));
-                                const size_t pos_lng = lng_string.find_first_of(',');
-                                if (pos_lng != line.npos) {
-                                    //запятую нашли все что левее - долгота, правее - остановки
-                                    auto stops_string = Ltrim(lng_string.substr(pos_lng + 1, line.npos));
-                                    lng_string = Rtrim(lng_string.substr(0, pos_lng));
-                                    //запомним необходимое расстояние в стек
-                                    from_to_distances.push(
-                                            {stop_to_upload.name, stops_string});
+        std::string_view line_to_parse = line;
+        auto pos = line_to_parse.find_first_of(':');
 
-                                }
-                                stop_to_upload.coords.lng = std::stod(lng_string);
-                                //add stop to transport catalogue
-                                transport_catalogue.AddStop(std::move(stop_to_upload));
+        if (pos == line_to_parse.npos) {
+            input.ignore(1);
+            return input;
+        }
+        //extract name
+        bus_stop.name = line_to_parse.substr(0, pos);
+        line_to_parse.remove_prefix(pos + 1);
+        //we have rest of string after :
+        pos = line_to_parse.find_first_of(',');
+        bus_stop.coords.lat = std::stod(std::string(Trim(line_to_parse.substr(0, pos))));
+        line_to_parse.remove_prefix(pos + 1);
+        //проверим если можно рассплитовать правую часть по запятым, значит есть расстояния
+        pos = line_to_parse.find_first_of(',');
+        if (pos == line.npos) {
+            //запятую не нашли - все забираем в lng
+            bus_stop.coords.lng = std::stod(std::string(Trim(line_to_parse)));
+        } else {
+            //запятую нашли все что левее - долгота, правее - остановки
+            bus_stop.coords.lng = std::stod(std::string(Trim(line_to_parse.substr(0, pos))));
+            line_to_parse.remove_prefix(pos + 1);
+            //долготу убрали остались только остановки - обработаем их
+            while (pos != line_to_parse.npos) {
+                pos = line_to_parse.find_first_of(',');
+                bus_stop.distance_to_other_stops.insert(
+                        ParseDistanceToStop(line_to_parse.substr(0, pos)));
 
-                            } else {
-                                throw ("Error in coordinate format");
-                            }
-                        } else if ((query_type == "Bus"s)) {
-                            //we have query to add route
-                            //parse route and add to queue
-                            routes_to_add.push({std::string(name), query_data});
-                        } else {
-                            throw ("Unknown upload query type");
-                        }
-                    } else {
-                        throw ("Query_type/name parse error");
-                    }
-                } else {
-                    throw ("That is not upload query");
-                }
+                line_to_parse.remove_prefix(pos + 1);
             }
         }
-        std::cerr << "Stops performing finish" << std::endl;
-        //we processed all strings
-        //we added all stops
-        //now we can add all distances
-        PerformStopDistanceUpload(transport_catalogue, from_to_distances);
-        //we processed all strings
-        //we added all stops
-        //we added all distances
-        //now we need to process all routes from queue
-        //int i = 1;
-        while (!routes_to_add.empty()) {
-            //std::cerr << "Perform route: " << i++ << std::endl;
-            auto route = routes_to_add.front();
-            //need to parse route
-            //make resulting structure
-            BusRoute route_to_add;
-            route_to_add.name = route.first;
-            //std::clog << "Route forming: "s << route.first << std::endl;
-            //
-            std::vector<std::string> stops_in_route;
+        //input.ignore(1);
+        return input;
+    }
 
-            if (route.second.find_first_of('-') != route.second.npos &&
-                route.second.find_first_of('>') == route.second.npos) {
-                //its forward route
-                route_to_add.is_circular = false;
-                stops_in_route = SplitByChar(route.second, '-');
+    std::istream &operator>>(std::istream &input, BusRoute &bus_route) {
+        std::string line;
+        std::getline(input, line);
 
-            } else if (route.second.find_first_of('>') != route.second.npos &&
-                       route.second.find_first_of('-') == route.second.npos) {
-                //its circle route
-                route_to_add.is_circular = true;
-                stops_in_route = SplitByChar(route.second, '>');
+        std::string_view line_to_parse = line;
+        auto pos = line_to_parse.find_first_of(':');
 
-            } else {
-                throw ("Error route description& It has - and > simultaneously");
-            }
-            std::for_each(stops_in_route.begin(), stops_in_route.end(),
-                          [transport_catalogue, &route_to_add](const std::string stop_name) {
-                              const auto stop = transport_catalogue.GetStopByName(stop_name);
-                              if (stop != nullptr) {
-                                  route_to_add.stops.emplace_back(stop);
-                                  //std::clog << "Stop added: "s << stop->name << std::endl;
-                              } else {
-                                  throw ("Unknown stop in route");
-                              }
-                          });
-            //adding route
-            transport_catalogue.AddRoute(std::move(route_to_add));
-            routes_to_add.pop();
+        if (pos == line_to_parse.npos) {
+            input.ignore(1);
+            return input;
         }
-        std::cerr << "Route performing finish" << std::endl;
+        //extract name
+        bus_route.name = line_to_parse.substr(0, pos);
+        line_to_parse.remove_prefix(pos + 1);
+        //we have rest of string after :
+        char stops_delimetr;
+        if (line_to_parse.find_first_of('-') != line_to_parse.npos &&
+            line_to_parse.find_first_of('>') == line_to_parse.npos) {
+            //its forward route
+            bus_route.is_circular = false;
+            stops_delimetr = '-';
+
+        } else if (line_to_parse.find_first_of('>') != line_to_parse.npos &&
+                   line_to_parse.find_first_of('-') == line_to_parse.npos) {
+            //its circle route
+            bus_route.is_circular = true;
+            stops_delimetr = '>';
+
+        } else {
+            throw ("Error route description& It has - and > simultaneously");
+        }
+        //parsing of stops in route
+        while (pos != line_to_parse.npos) {
+            pos = line_to_parse.find_first_of(stops_delimetr);
+            auto stop_on_route = std::string(Trim(line_to_parse.substr(0, pos)));
+            bus_route.stops.push_back(stop_on_route);
+            bus_route.unique_stops.insert(stop_on_route);
+
+            line_to_parse.remove_prefix(pos + 1);
+        }
+
+        //input.ignore(1);
+        return input;
     }
 
     void StreamData::PerfomUploadQueries(TransportCatalogue &transport_catalogue) {
-        int n;
-//        this->input_ >> n;
-//        this->input_.ignore(1);
-        std::string line;
-        std::getline(input_, line, '\n');
-        n = std::stoi(Trim(line));
+        int queries_count;
+        this->input_ >> queries_count;
+        this->input_.ignore(1);
 
-        this->parse_perform_upload_queries(transport_catalogue, n);
+        std::string line, query;
+        for (int i = 0; i < queries_count; ++i) {
+            std::getline(input_, line, '\n');
+
+            std::stringstream buffer(line);
+
+            buffer >> query;
+            buffer.ignore(1);
+
+            if (query == "Stop") {
+                BusStop stop;
+                buffer >> stop;
+                transport_catalogue.AddStop(std::move(stop));
+            } else if (query == "Bus") {
+                BusRoute route;
+                buffer >> route;
+                transport_catalogue.AddRoute(std::move(route));
+            }
+        }
+
+        //recalc route stats after all data added
+        transport_catalogue.CalcRoutesStat();
     }
 
     QueryHandler *QueryHandler::GetHandler(const io_type datasearch, std::istream &input) {
