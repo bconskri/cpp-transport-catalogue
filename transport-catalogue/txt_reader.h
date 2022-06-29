@@ -21,7 +21,6 @@ namespace txt_reader {
 
         void PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
                            request_handler::Logger *output = nullptr) override; //fixme;
-        std::istream &GetStream();
 
     private:
         //write data from stream into catalogue
@@ -35,10 +34,4 @@ namespace txt_reader {
         void OutputStopInfo(TransportCatalogue &transport_catalogue,
                             const std::string_view stopname_to_output, request_handler::Logger *output) const;
     };
-
-    template<typename T>
-    TxtData &operator>>(TxtData &classObj, T into) {
-        classObj.GetStream() >> into;
-        return classObj;
-    }
 } // namespace txt_reader

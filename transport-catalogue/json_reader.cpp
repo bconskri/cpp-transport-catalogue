@@ -9,10 +9,13 @@ namespace json_reader {
     void JsonData::PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) {}
 
     void JsonData::PerfomStatQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
-                                     request_handler::Logger *output){}
+                                     request_handler::Logger *output) {}
 
     void JsonData::PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
-                                 request_handler::Logger *output) {}
+                                 request_handler::Logger *output) {
+        JsonData::PerfomUploadQueries(transport_catalogue, input);
+        JsonData::PerfomStatQueries(transport_catalogue, input, output);
+    }
 
     void JsonData::parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
                                               const int q_count, request_handler::Inputer *input,

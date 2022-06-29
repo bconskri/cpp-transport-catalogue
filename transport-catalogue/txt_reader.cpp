@@ -108,7 +108,7 @@ namespace txt_reader {
 
     void TxtData::PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) {
         int queries_count;
-        auto& input_ = dynamic_cast<TxtData *>(input)->GetStream();
+        auto& input_ = input->GetStream();
         input_ >> queries_count;
         input_.ignore(1);
 
@@ -185,7 +185,7 @@ namespace txt_reader {
                                              const int q_count, request_handler::Inputer *input,
                                              request_handler::Logger *output) {
         using namespace std::literals;
-        auto& input_ = dynamic_cast<TxtData *>(input)->GetStream();
+        auto& input_ = input->GetStream();
 
         std::string line;
         std::string_view line_to_parse;
@@ -219,7 +219,7 @@ namespace txt_reader {
     void TxtData::PerfomStatQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
                                     request_handler::Logger *output) {
         int queries_count;
-        auto& input_ = dynamic_cast<TxtData *>(input)->GetStream();
+        auto& input_ = input->GetStream();
         input_ >> queries_count;
         input_.ignore(1);
 
@@ -227,10 +227,6 @@ namespace txt_reader {
             output = new request_handler::ConsoleLogger();
         }
         this->parse_perform_stat_queries(transport_catalogue, queries_count, input, output);
-    }
-
-    std::istream &TxtData::GetStream() {
-        return std::cin;
     }
 
     void TxtData::PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,

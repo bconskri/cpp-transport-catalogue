@@ -15,13 +15,9 @@ int main() {
     auto in_f = Inputer::GetInputer(io_stream::File, ""s);
     auto out_f = Logger::GetLogger(io_stream::File, ""s);
 
-    //perform upload queries
-    auto upload_query_handler = request_handler::QueryHandler::GetHandler(io_type::Txt);
-    upload_query_handler->PerfomUploadQueries(transport_catalogue, in);
-
-    //perform stat queries
-    auto stat_query_handler = request_handler::QueryHandler::GetHandler(io_type::Txt);
-    stat_query_handler->PerfomStatQueries(transport_catalogue, in, out);
+    //perform upload queries & stat queries in one
+    auto upload_query_handler = request_handler::QueryHandler::GetHandler(io_type::Json);
+    upload_query_handler->PerfomQueries(transport_catalogue, in, out);
 
     //чтение формата TXT источник Console
 //    TransportCatalogue transport_catalogue{};

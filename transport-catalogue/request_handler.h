@@ -18,36 +18,36 @@ namespace request_handler {
 
     class Inputer {
     public:
-        virtual void input(const std::string_view &) = 0;
-
         static Inputer *GetInputer(const io_stream datasearch, std::string file_name = "");
+
+        virtual std::istream& GetStream() = 0;
     };
 
     class ConsoleInputer final : public Inputer {
     public:
-        void input(const std::string_view &msg) override {
-            std::cout << msg;
-        };
+        std::istream& GetStream() override {
+            return std::cin;
+        }
     };
 
     class FileInputer final : public Inputer {
     public:
         FileInputer(const std::string &filename) {
-            ofs.open(filename);
+            ofs_.open(filename);
         }
 
         ~FileInputer() {
-            if (ofs) {
-                ofs.close();
+            if (ofs_) {
+                ofs_.close();
             }
         }
 
-        void input(const std::string_view &msg) override {
-            ofs << msg;
+        std::ifstream& GetStream() override {
+            return ofs_;
         }
 
     private:
-        std::ofstream ofs;
+        std::ifstream ofs_;
     };
 
     class Logger {
@@ -104,4 +104,10 @@ namespace request_handler {
         //create loader from specified data search
         static QueryHandler *GetHandler(const io_type datatype);
     };
+
+    template<typename T>
+    Inputer &operator>>(Inputer &classObj, T into) {
+        classObj.GetStream() >> into;
+        return classObj;
+    }
 } //namespace request_handler
