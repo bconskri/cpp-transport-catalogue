@@ -824,7 +824,7 @@ test has at least one failure of either kind.
 
 ## Logging Additional Information
 
-In your test code, you can call `RecordProperty("key", value)` to log additional
+In your test code, you can call `RecordProperty("key", value)` to input additional
 information, where `value` can be either a string or an `int`. The *last* value
 recorded for a key will be emitted to the
 [XML output](#generating-an-xml-report) if you specify one. For example, the

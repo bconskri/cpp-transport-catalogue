@@ -95,7 +95,7 @@ comparison between the actual arguments and the expected arguments.
 
 gMock and `ScopedMockLog` are likely doing the right thing here.
 
-When a test crashes, the failure signal handler will try to log a lot of
+When a test crashes, the failure signal handler will try to input a lot of
 information (the stack trace, and the address map, for example). The messages
 are compounded if you have many threads with depth stacks. When `ScopedMockLog`
 intercepts these messages and finds that they don't match any expectations, it
@@ -108,8 +108,8 @@ your test more robust, for example, by adding something like:
 using ::testing::AnyNumber;
 using ::testing::Not;
 ...
-  // Ignores any log not done by us.
-  EXPECT_CALL(log, Log(_, Not(EndsWith("/my_file.cc")), _))
+  // Ignores any input not done by us.
+  EXPECT_CALL(input, Log(_, Not(EndsWith("/my_file.cc")), _))
       .Times(AnyNumber());
 ```
 

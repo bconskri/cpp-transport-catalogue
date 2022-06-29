@@ -1,4 +1,4 @@
-#include "console_reader.h"
+#include "txt_reader.h"
 #include "request_handler.h"
 #include "domain.h"
 
@@ -8,7 +8,7 @@
 #include <sstream>
 #include <fstream>
 
-namespace console_reader {
+namespace txt_reader {
 
     std::pair<std::string, unsigned> ParseDistanceToStop(std::string_view line) {
         auto pos = line.find_first_of('m');
@@ -106,10 +106,11 @@ namespace console_reader {
         return input;
     }
 
-    void StreamData::PerfomUploadQueries(TransportCatalogue &transport_catalogue) {
+    void TxtData::PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) {
         int queries_count;
-        this->input_ >> queries_count;
-        this->input_.ignore(1);
+        auto& input_ = dynamic_cast<TxtData *>(input)->GetStream();
+        input_ >> queries_count;
+        input_.ignore(1);
 
         std::string line, query;
         for (int i = 0; i < queries_count; ++i) {
@@ -130,13 +131,12 @@ namespace console_reader {
                 transport_catalogue.AddRoute(std::move(route));
             }
         }
-
         //recalc route stats after all data added
         transport_catalogue.CalcRoutesStat();
     }
 
-    void StreamData::OutputStopInfo(TransportCatalogue &transport_catalogue,
-                                    const std::string_view stopname_to_output, request_handler::Logger *output) const {
+    void TxtData::OutputStopInfo(TransportCatalogue &transport_catalogue,
+                                 const std::string_view stopname_to_output, request_handler::Logger *output) const {
         using namespace std::literals;
 
         std::optional<std::set<std::string_view>> buses_for_stop = transport_catalogue.GetBusesForStopInfo(
@@ -162,8 +162,8 @@ namespace console_reader {
         output->log(stream.str());
     }
 
-    void StreamData::OutputBusInfo(TransportCatalogue &transport_catalogue,
-                                   const std::string_view busname_to_output, request_handler::Logger *output) const {
+    void TxtData::OutputBusInfo(TransportCatalogue &transport_catalogue,
+                                const std::string_view busname_to_output, request_handler::Logger *output) const {
         using namespace std::literals;
         auto route = transport_catalogue.GetRouteInfo(busname_to_output);
         //
@@ -181,13 +181,15 @@ namespace console_reader {
         }
     }
 
-    void StreamData::parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
-                                                const int lcount, request_handler::Logger *output) {
+    void TxtData::parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
+                                             const int q_count, request_handler::Inputer *input,
+                                             request_handler::Logger *output) {
         using namespace std::literals;
+        auto& input_ = dynamic_cast<TxtData *>(input)->GetStream();
 
         std::string line;
         std::string_view line_to_parse;
-        for (int i = 0; i < lcount; ++i) {
+        for (int i = 0; i < q_count; ++i) {
             std::getline(input_, line, '\n');
             line_to_parse = Trim(line);
             if (!line_to_parse.empty()) {
@@ -214,15 +216,27 @@ namespace console_reader {
     }
 
 
-    void StreamData::PerfomStatQueries(TransportCatalogue &transport_catalogue, request_handler::Logger *output) {
+    void TxtData::PerfomStatQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+                                    request_handler::Logger *output) {
         int queries_count;
-        this->input_ >> queries_count;
-        this->input_.ignore(1);
+        auto& input_ = dynamic_cast<TxtData *>(input)->GetStream();
+        input_ >> queries_count;
+        input_.ignore(1);
 
         if (output == nullptr) {
             output = new request_handler::ConsoleLogger();
         }
-        this->parse_perform_stat_queries(transport_catalogue, queries_count, output);
+        this->parse_perform_stat_queries(transport_catalogue, queries_count, input, output);
     }
 
-} //namespace console_reader
+    std::istream &TxtData::GetStream() {
+        return std::cin;
+    }
+
+    void TxtData::PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+                       request_handler::Logger *output) {
+        TxtData::PerfomUploadQueries(transport_catalogue, input);
+        TxtData::PerfomStatQueries(transport_catalogue, input, output);
+    }
+
+} //namespace txt_reader

@@ -1,14 +1,17 @@
 #pragma once
 
-#include "request_handler.h"
 #include "transport_catalogue.h"
-#include "json.h"
+#include "geo.h"
+#include "request_handler.h"
 
-namespace json_reader {
+#include <iostream>
+#include <algorithm>
+#include <cassert>
+#include <queue>
+
+namespace txt_reader {
     //realize StreamData query performerser
-    class JsonData : public request_handler::QueryHandler {
-    public:
-        //realize loader from stream
+    class TxtData : public request_handler::QueryHandler {
     public:
         //realize loader from stream
         void PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) override;
@@ -17,7 +20,7 @@ namespace json_reader {
                                request_handler::Logger *output = nullptr) override;
 
         void PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
-                           request_handler::Logger *output = nullptr) override;
+                           request_handler::Logger *output = nullptr) override; //fixme;
         std::istream &GetStream();
 
     private:
@@ -34,7 +37,7 @@ namespace json_reader {
     };
 
     template<typename T>
-    JsonData &operator>>(JsonData &classObj, T into) {
+    TxtData &operator>>(TxtData &classObj, T into) {
         classObj.GetStream() >> into;
         return classObj;
     }

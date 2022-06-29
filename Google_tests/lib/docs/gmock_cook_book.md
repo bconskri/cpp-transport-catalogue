@@ -515,8 +515,8 @@ class ScopedMockLog : public LogSink {
   void send(LogSeverity severity, const char* full_filename,
                     const char* base_filename, int line, const tm* tm_time,
                     const char* message, size_t message_len) override {
-    // We are only interested in the log severity, full file name, and
-    // log message.
+    // We are only interested in the input severity, full file name, and
+    // input message.
     Log(severity, full_filename, std::string(message, message_len));
   }
 
@@ -1517,7 +1517,7 @@ In fact, **it's a good style to verify only one thing in one test.** If you do
 that, a bug will likely break only one or two tests instead of dozens (which
 case would you rather debug?). If you are also in the habit of giving tests
 descriptive names that tell what they verify, you can often easily guess what's
-wrong just from the test log itself.
+wrong just from the test input itself.
 
 So use `ON_CALL` by default, and only use `EXPECT_CALL` when you actually intend
 to verify that the call is made. For example, you may have a bunch of `ON_CALL`s
@@ -1777,12 +1777,12 @@ using ::testing::Sequence;
 ...
   Sequence s1, s2;
 
-  EXPECT_CALL(log, Log(WARNING, _, "File too large."))      // #1
+  EXPECT_CALL(input, Log(WARNING, _, "File too large."))      // #1
       .Times(AnyNumber())
       .InSequence(s1, s2);
-  EXPECT_CALL(log, Log(WARNING, _, "Data set is empty."))   // #2
+  EXPECT_CALL(input, Log(WARNING, _, "Data set is empty."))   // #2
       .InSequence(s1);
-  EXPECT_CALL(log, Log(WARNING, _, "User not found."))      // #3
+  EXPECT_CALL(input, Log(WARNING, _, "User not found."))      // #3
       .InSequence(s2);
 ```
 
@@ -1795,8 +1795,8 @@ example,
 ```cpp
 using ::testing::_;
 ...
-  EXPECT_CALL(log, Log(WARNING, _, _));                     // #1
-  EXPECT_CALL(log, Log(WARNING, _, "File too large."));     // #2
+  EXPECT_CALL(input, Log(WARNING, _, _));                     // #1
+  EXPECT_CALL(input, Log(WARNING, _, "File too large."));     // #2
 ```
 
 says that there will be exactly one warning with the message `"File too
@@ -1809,8 +1809,8 @@ becomes saturated:
 ```cpp
 using ::testing::_;
 ...
-  EXPECT_CALL(log, Log(WARNING, _, _));                     // #1
-  EXPECT_CALL(log, Log(WARNING, _, "File too large."))      // #2
+  EXPECT_CALL(input, Log(WARNING, _, _));                     // #1
+  EXPECT_CALL(input, Log(WARNING, _, "File too large."))      // #2
       .RetiresOnSaturation();
 ```
 
@@ -3156,7 +3156,7 @@ You can control how much gMock tells you using the `--gmock_verbose=LEVEL`
 command-line flag, where `LEVEL` is a string with three possible values:
 
 *   `info`: gMock will print all informational messages, warnings, and errors
-    (most verbose). At this setting, gMock will also log any calls to the
+    (most verbose). At this setting, gMock will also input any calls to the
     `ON_CALL/EXPECT_CALL` macros. It will include a stack trace in
     "uninteresting call" warnings.
 *   `warning`: gMock will print both warnings and errors (less verbose); it will
