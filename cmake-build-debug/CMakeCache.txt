@@ -213,6 +213,15 @@ TransportCatalogue_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 TransportCatalogue_SOURCE_DIR:STATIC=/Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue
 
+//Value Computed by CMake
+transportCatalogue_BINARY_DIR:STATIC=/Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/cmake-build-debug/transport-catalogue
+
+//Value Computed by CMake
+transportCatalogue_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+transportCatalogue_SOURCE_DIR:STATIC=/Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/transport-catalogue
+
 
 ########################
 # INTERNAL cache entries
