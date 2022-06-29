@@ -111,3 +111,21 @@ namespace request_handler {
         return classObj;
     }
 } //namespace request_handler
+
+inline std::string_view Ltrim(std::string_view str) {
+    const auto pos(str.find_first_not_of(" \t\n\r\f\v"));
+    str.remove_prefix(std::min(pos, str.length()));
+    return str;
+}
+
+inline std::string_view Rtrim(std::string_view str) {
+    const auto pos(str.find_last_not_of(" \t\n\r\f\v"));
+    str.remove_suffix(std::min(str.length() - pos - 1, str.length()));
+    return str;
+}
+
+inline std::string_view Trim(std::string_view str) {
+    str = Ltrim(str);
+    str = Rtrim(str);
+    return str;
+}

@@ -6,7 +6,9 @@
 
 namespace json_reader {
 
-    void JsonData::PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) {}
+    void JsonData::PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) {
+
+    }
 
     void JsonData::PerfomStatQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
                                      request_handler::Logger *output) {}
