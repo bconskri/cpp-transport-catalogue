@@ -18,10 +18,13 @@ namespace json_reader {
 
         void PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
                            request_handler::Logger *output = nullptr) override;
+
         std::istream &GetStream();
 
     private:
         //write data from stream into catalogue
+        void parse_perform_upload_queries(const std::vector<json::Node> &upload_requests) const;
+
         void parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
                                         const int q_count, request_handler::Inputer *input,
                                         request_handler::Logger *output = nullptr);

@@ -25,3 +25,7 @@
 3	5079	1656517159911293972	CMakeFiles/TransportCatalogue.dir/transport-catalogue/txt_reader.cpp.o	9150dd39e2f0bc58
 4087	7240	1656517162073981855	CMakeFiles/TransportCatalogue.dir/transport-catalogue/request_handler.cpp.o	60f868f1c9383a80
 7240	7384	1656517162217412321	TransportCatalogue	89de41313861433b
+10	5796	1656517381642787904	CMakeFiles/TransportCatalogue.dir/transport-catalogue/json_reader.cpp.o	9f8b5998fe0cc02f
+5799	5970	1656517381862594060	TransportCatalogue	89de41313861433b
+12	5901	1656518232305079200	CMakeFiles/TransportCatalogue.dir/transport-catalogue/request_handler.cpp.o	60f868f1c9383a80
+12	3516	1656518381053319532	CMakeFiles/TransportCatalogue.dir/transport-catalogue/request_handler.cpp.o	60f868f1c9383a80
