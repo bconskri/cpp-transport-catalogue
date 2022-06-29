@@ -55,14 +55,8 @@ build CMakeFiles/TransportCatalogue.dir/main.cpp.o: CXX_COMPILER__TransportCatal
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir
 
-build CMakeFiles/TransportCatalogue.dir/transport-catalogue/input_reader.cpp.o: CXX_COMPILER__TransportCatalogue_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/transport-catalogue/input_reader.cpp || cmake_object_order_depends_target_TransportCatalogue
-  DEP_FILE = CMakeFiles/TransportCatalogue.dir/transport-catalogue/input_reader.cpp.o.d
-  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
-  OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
-  OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir/transport-catalogue
-
-build CMakeFiles/TransportCatalogue.dir/transport-catalogue/stat_reader.cpp.o: CXX_COMPILER__TransportCatalogue_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/transport-catalogue/stat_reader.cpp || cmake_object_order_depends_target_TransportCatalogue
-  DEP_FILE = CMakeFiles/TransportCatalogue.dir/transport-catalogue/stat_reader.cpp.o.d
+build CMakeFiles/TransportCatalogue.dir/transport-catalogue/console_reader.cpp.o: CXX_COMPILER__TransportCatalogue_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/transport-catalogue/console_reader.cpp || cmake_object_order_depends_target_TransportCatalogue
+  DEP_FILE = CMakeFiles/TransportCatalogue.dir/transport-catalogue/console_reader.cpp.o.d
   FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir/transport-catalogue
@@ -85,6 +79,12 @@ build CMakeFiles/TransportCatalogue.dir/transport-catalogue/json_reader.cpp.o: C
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir/transport-catalogue
 
+build CMakeFiles/TransportCatalogue.dir/transport-catalogue/request_handler.cpp.o: CXX_COMPILER__TransportCatalogue_Debug /Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/transport-catalogue/request_handler.cpp || cmake_object_order_depends_target_TransportCatalogue
+  DEP_FILE = CMakeFiles/TransportCatalogue.dir/transport-catalogue/request_handler.cpp.o.d
+  FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -std=gnu++17
+  OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
+  OBJECT_FILE_DIR = CMakeFiles/TransportCatalogue.dir/transport-catalogue
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target TransportCatalogue
@@ -93,7 +93,7 @@ build CMakeFiles/TransportCatalogue.dir/transport-catalogue/json_reader.cpp.o: C
 #############################################
 # Link the executable TransportCatalogue
 
-build TransportCatalogue: CXX_EXECUTABLE_LINKER__TransportCatalogue_Debug CMakeFiles/TransportCatalogue.dir/main.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/input_reader.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/stat_reader.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/transport_catalogue.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/json.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/json_reader.cpp.o
+build TransportCatalogue: CXX_EXECUTABLE_LINKER__TransportCatalogue_Debug CMakeFiles/TransportCatalogue.dir/main.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/console_reader.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/transport_catalogue.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/json.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/json_reader.cpp.o CMakeFiles/TransportCatalogue.dir/transport-catalogue/request_handler.cpp.o
   FLAGS = -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk
   OBJECT_DIR = CMakeFiles/TransportCatalogue.dir
   POST_BUILD = :

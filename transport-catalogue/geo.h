@@ -30,10 +30,6 @@ namespace geo {
     }
 }
 
-enum io_type {
-    Console = 0, Txt, Json, Xml
-};
-
 inline std::string_view Ltrim(std::string_view str) {
     const auto pos(str.find_first_not_of(" \t\n\r\f\v"));
     str.remove_prefix(std::min(pos, str.length()));

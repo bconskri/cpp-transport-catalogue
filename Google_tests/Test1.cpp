@@ -2,7 +2,7 @@
 // Created by Родион Каргаполов on 10.06.2022.
 //
 #include "gtest/gtest.h"
-#include "../transport-catalogue/input_reader.h"
+#include "../transport-catalogue/console_reader.h"
 #include "../transport-catalogue/stat_reader.h"
 #include "../transport-catalogue/transport_catalogue.h"
 
