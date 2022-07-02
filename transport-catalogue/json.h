@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <variant>
+#include <iomanip>
 
 namespace json {
     class Node;
@@ -146,7 +147,7 @@ namespace json {
 
     template<typename Value>
     void PrintValue(const Value &value, std::ostream &out) {
-        out << std::boolalpha << value;
+        out << std::boolalpha << std::fixed << std::setprecision(6) << value;
     }
 
     // Перегрузка функции PrintValue для вывода значений null
