@@ -37,16 +37,16 @@ namespace txt_reader {
         line_to_parse.remove_prefix(pos + 1);
         //we have rest of string after :
         pos = line_to_parse.find_first_of(',');
-        bus_stop.coords.lat = std::stod(std::string(Trim(line_to_parse.substr(0, pos))));
+        bus_stop.coordinates.lat = std::stod(std::string(Trim(line_to_parse.substr(0, pos))));
         line_to_parse.remove_prefix(pos + 1);
         //проверим если можно рассплитовать правую часть по запятым, значит есть расстояния
         pos = line_to_parse.find_first_of(',');
         if (pos == line.npos) {
             //запятую не нашли - все забираем в lng
-            bus_stop.coords.lng = std::stod(std::string(Trim(line_to_parse)));
+            bus_stop.coordinates.lng = std::stod(std::string(Trim(line_to_parse)));
         } else {
             //запятую нашли все что левее - долгота, правее - остановки
-            bus_stop.coords.lng = std::stod(std::string(Trim(line_to_parse.substr(0, pos))));
+            bus_stop.coordinates.lng = std::stod(std::string(Trim(line_to_parse.substr(0, pos))));
             line_to_parse.remove_prefix(pos + 1);
             //долготу убрали остались только остановки - обработаем их
             while (pos != line_to_parse.npos) {
@@ -80,13 +80,13 @@ namespace txt_reader {
         if (line_to_parse.find_first_of('-') != line_to_parse.npos &&
             line_to_parse.find_first_of('>') == line_to_parse.npos) {
             //its forward route
-            bus_route.is_circular = false;
+            bus_route.is_roundtrip = false;
             stops_delimetr = '-';
 
         } else if (line_to_parse.find_first_of('>') != line_to_parse.npos &&
                    line_to_parse.find_first_of('-') == line_to_parse.npos) {
             //its circle route
-            bus_route.is_circular = true;
+            bus_route.is_roundtrip = true;
             stops_delimetr = '>';
 
         } else {
@@ -106,7 +106,7 @@ namespace txt_reader {
         return input;
     }
 
-    void TxtData::PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) {
+    void TxtData::PerfomUploadQueries(request_handler::Inputer *input) {
         int queries_count;
         auto& input_ = input->GetStream();
         input_ >> queries_count;
@@ -124,22 +124,21 @@ namespace txt_reader {
             if (query == "Stop") {
                 BusStop stop;
                 buffer >> stop;
-                transport_catalogue.AddStop(std::move(stop));
+                transport_catalogue_->AddStop(std::move(stop));
             } else if (query == "Bus") {
                 BusRoute route;
                 buffer >> route;
-                transport_catalogue.AddRoute(std::move(route));
+                transport_catalogue_->AddRoute(std::move(route));
             }
         }
         //recalc route stats after all data added
-        transport_catalogue.CalcRoutesStat();
+        transport_catalogue_->CalcRoutesStat();
     }
 
-    void TxtData::OutputStopInfo(TransportCatalogue &transport_catalogue,
-                                 const std::string_view stopname_to_output, request_handler::Logger *output) const {
+    void TxtData::OutputStopInfo(const std::string_view stopname_to_output, request_handler::Logger *output) const {
         using namespace std::literals;
 
-        std::optional<std::set<std::string_view>> buses_for_stop = transport_catalogue.GetBusesForStopInfo(
+        std::optional<std::set<std::string_view>> buses_for_stop = transport_catalogue_->GetBusesForStopInfo(
                 stopname_to_output);
         std::ostringstream stream;
         if (buses_for_stop == std::nullopt) {
@@ -162,10 +161,9 @@ namespace txt_reader {
         output->log(stream.str());
     }
 
-    void TxtData::OutputBusInfo(TransportCatalogue &transport_catalogue,
-                                const std::string_view busname_to_output, request_handler::Logger *output) const {
+    void TxtData::OutputBusInfo(const std::string_view busname_to_output, request_handler::Logger *output) const {
         using namespace std::literals;
-        auto route = transport_catalogue.GetRouteInfo(busname_to_output);
+        auto route = transport_catalogue_->GetRouteInfo(busname_to_output);
         //
         if (route != nullptr) {
             std::ostringstream stream;
@@ -181,8 +179,7 @@ namespace txt_reader {
         }
     }
 
-    void TxtData::parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
-                                             const int q_count, request_handler::Inputer *input,
+    void TxtData::parse_perform_stat_queries(const int q_count, request_handler::Inputer *input,
                                              request_handler::Logger *output) {
         using namespace std::literals;
         auto& input_ = input->GetStream();
@@ -200,10 +197,10 @@ namespace txt_reader {
                     auto query_data = Trim(line_to_parse.substr(pos + 1, line_to_parse.npos));
                     //
                     if (query_type == "Bus"sv) {
-                        OutputBusInfo(transport_catalogue, query_data, output);
+                        OutputBusInfo(query_data, output);
 
                     } else if (query_type == "Stop"sv) {
-                        OutputStopInfo(transport_catalogue, query_data, output);
+                        OutputStopInfo(query_data, output);
 
                     } else {
                         throw ("Query_type/name parse error");
@@ -216,7 +213,7 @@ namespace txt_reader {
     }
 
 
-    void TxtData::PerfomStatQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+    void TxtData::PerfomStatQueries(request_handler::Inputer *input,
                                     request_handler::Logger *output) {
         int queries_count;
         auto& input_ = input->GetStream();
@@ -226,13 +223,13 @@ namespace txt_reader {
         if (output == nullptr) {
             output = new request_handler::ConsoleLogger();
         }
-        this->parse_perform_stat_queries(transport_catalogue, queries_count, input, output);
+        this->parse_perform_stat_queries(queries_count, input, output);
     }
 
-    void TxtData::PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+    void TxtData::PerfomQueries(request_handler::Inputer *input,
                        request_handler::Logger *output) {
-        TxtData::PerfomUploadQueries(transport_catalogue, input);
-        TxtData::PerfomStatQueries(transport_catalogue, input, output);
+        TxtData::PerfomUploadQueries(input);
+        TxtData::PerfomStatQueries(input, output);
     }
 
 } //namespace txt_reader

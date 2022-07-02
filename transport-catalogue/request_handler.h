@@ -93,16 +93,21 @@ namespace request_handler {
         virtual ~QueryHandler() = default;
 
         //make load queries from data search and perform write or read data to/from transport_catalogue
-        virtual void PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) = 0;
+        virtual void PerfomUploadQueries(request_handler::Inputer *input) = 0;
 
-        virtual void PerfomStatQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+        virtual void PerfomStatQueries(request_handler::Inputer *input,
                                        request_handler::Logger *output = nullptr) = 0;
 
-        virtual void PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+        virtual void PerfomQueries(request_handler::Inputer *input,
                                    request_handler::Logger *output = nullptr) = 0;
 
         //create loader from specified data search
         static QueryHandler *GetHandler(const io_type datatype);
+
+        //привязывает транспортный каталог для работы с ним
+        void LinkCatalogue(const TransportCatalogue& catalogue_);
+    protected:
+        std::shared_ptr<TransportCatalogue> transport_catalogue_;
     };
 
     template<typename T>

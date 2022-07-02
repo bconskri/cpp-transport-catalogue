@@ -9,31 +9,31 @@ namespace json_reader {
     class JsonData : public request_handler::QueryHandler {
     public:
         //realize loader from stream
-    public:
-        //realize loader from stream
-        void PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) override;
+        void PerfomUploadQueries(request_handler::Inputer *input) override;
 
-        void PerfomStatQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+        void PerfomStatQueries(request_handler::Inputer *input,
                                request_handler::Logger *output = nullptr) override;
 
-        void PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+        void PerfomQueries(request_handler::Inputer *input,
                            request_handler::Logger *output = nullptr) override;
 
         std::istream &GetStream();
 
     private:
+        json::Node root_;
+
         //write data from stream into catalogue
-        void parse_perform_upload_queries(const std::vector<json::Node> &upload_requests) const;
+        void parse_stop(json::Node &request);
 
-        void parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
-                                        const int q_count, request_handler::Inputer *input,
-                                        request_handler::Logger *output = nullptr);
+        void parse_bus(json::Node &request);
 
-        void OutputBusInfo(TransportCatalogue &transport_catalogue,
-                           const std::string_view busname_to_output, request_handler::Logger *output) const;
+        void parse_perform_upload_queries(std::vector<json::Node> &upload_requests);
 
-        void OutputStopInfo(TransportCatalogue &transport_catalogue,
-                            const std::string_view stopname_to_output, request_handler::Logger *output) const;
+        void parse_perform_stat_queries(std::vector<json::Node> &stat_requests);
+
+        void perform_bus_query(json::Node &request, json::Dict &response);
+
+        void perform_stop_query(json::Node &request, json::Dict &response);
     };
 
     template<typename T>

@@ -14,24 +14,21 @@ namespace txt_reader {
     class TxtData : public request_handler::QueryHandler {
     public:
         //realize loader from stream
-        void PerfomUploadQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input) override;
+        void PerfomUploadQueries(request_handler::Inputer *input) override;
 
-        void PerfomStatQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+        void PerfomStatQueries(request_handler::Inputer *input,
                                request_handler::Logger *output = nullptr) override;
 
-        void PerfomQueries(TransportCatalogue &transport_catalogue, request_handler::Inputer *input,
+        void PerfomQueries(request_handler::Inputer *input,
                            request_handler::Logger *output = nullptr) override; //fixme;
 
     private:
         //write data from stream into catalogue
-        void parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
-                                        const int q_count, request_handler::Inputer *input,
+        void parse_perform_stat_queries(const int q_count, request_handler::Inputer *input,
                                         request_handler::Logger *output = nullptr);
 
-        void OutputBusInfo(TransportCatalogue &transport_catalogue,
-                           const std::string_view busname_to_output, request_handler::Logger *output) const;
+        void OutputBusInfo(const std::string_view busname_to_output, request_handler::Logger *output) const;
 
-        void OutputStopInfo(TransportCatalogue &transport_catalogue,
-                            const std::string_view stopname_to_output, request_handler::Logger *output) const;
+        void OutputStopInfo(const std::string_view stopname_to_output, request_handler::Logger *output) const;
     };
 } // namespace txt_reader

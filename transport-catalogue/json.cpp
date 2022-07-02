@@ -365,7 +365,7 @@ namespace json {
         //ctx.out << std::endl;
     }
 
-    bool operator==(const Node &lhs, const Array &rhs) {
+    bool operator==( Node &lhs, const Array &rhs) {
         return lhs.AsArray() == rhs;
     }
 } //namespace json

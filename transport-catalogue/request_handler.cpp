@@ -56,4 +56,8 @@ namespace request_handler {
         }
         return p;
     }
-} //namespace console_reader
+
+    void QueryHandler::LinkCatalogue(const TransportCatalogue &catalogue_) {
+        transport_catalogue_ = std::make_shared<TransportCatalogue>(catalogue_);
+    }
+} //namespace request_handler

@@ -17,7 +17,8 @@ int main() {
 
     //perform upload queries & stat queries in one
     auto upload_query_handler = request_handler::QueryHandler::GetHandler(io_type::Json);
-    upload_query_handler->PerfomQueries(transport_catalogue, in, out);
+    upload_query_handler->LinkCatalogue(transport_catalogue);
+    upload_query_handler->PerfomQueries(in, out);
 
     //чтение формата TXT источник Console
 //    TransportCatalogue transport_catalogue{};

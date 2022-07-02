@@ -17,7 +17,7 @@ void TransportCatalogue::AddRoute(BusRoute &&route) {
         busname_to_bus.insert({std::string_view(ref.name), &ref});
 
         //if it's not a circular route we need to build reverse path
-        if (!ref.is_circular) {
+        if (!ref.is_roundtrip) {
             for (int i = ref.stops.size() - 2; i >= 0; --i) {
                 ref.stops.emplace_back(ref.stops[i]);
             }
@@ -41,7 +41,7 @@ void TransportCatalogue::CalcRoutesStat() {
                 //calc route length
                 auto from_stop = GetStopByName(ptr->stops[i]);
                 auto to_stop = GetStopByName(ptr->stops[i + 1]);
-                ptr->route_length_geo += ComputeDistance(from_stop->coords, to_stop->coords);
+                ptr->route_length_geo += ComputeDistance(from_stop->coordinates, to_stop->coordinates);
                 ptr->route_length_meters += GetDistance(from_stop, to_stop);
 
                 //transport_catalogue.AddBusOnStop(route_name, stops_[i]);

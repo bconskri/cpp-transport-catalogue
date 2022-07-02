@@ -51,14 +51,14 @@ namespace json {
             return std::holds_alternative<std::map<std::string, Node>>(*this);
         }
 
-        auto &AsInt() const {
+        auto &AsInt() {
             if (IsInt()) {
                 return std::get<int>(*this);
             }
             throw std::logic_error("AsInt()");
         }
 
-        double AsDouble() const {
+        double AsDouble() {
             if (IsPureDouble()) {
                 return std::get<double>(*this);
             } else if (IsDouble()) {
@@ -67,28 +67,28 @@ namespace json {
             throw std::logic_error("AsDouble()");
         }
 
-        auto &AsBool() const {
+        auto &AsBool() {
             if (IsBool()) {
                 return std::get<bool>(*this);
             }
             throw std::logic_error("AsBool()");
         }
 
-        auto &AsString() const {
+        auto &AsString() {
             if (IsString()) {
                 return std::get<std::string>(*this);
             }
             throw std::logic_error("AsString()");
         }
 
-        auto &AsArray() const {
+        auto &AsArray()  {
             if (IsArray()) {
                 return std::get<std::vector<Node>>(*this);
             }
             throw std::logic_error("AsArray()");
         }
 
-        auto &AsMap() const {
+        auto &AsMap()  {
             if (IsMap()) {
                 return std::get<std::map<std::string, Node>>(*this);
             }

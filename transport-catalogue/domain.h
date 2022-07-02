@@ -10,7 +10,7 @@
 struct BusStop {
 
     std::string name;
-    geo::Coordinates coords{0L, 0L};
+    geo::Coordinates coordinates{0L, 0L};
     std::unordered_map<std::string, unsigned> distance_to_other_stops;
 };
 
@@ -30,7 +30,7 @@ struct BusRoute {
     //извилистость, то есть отношение фактической длины маршрута к географическому расстоянию
     double curvature = 0L;
     //circle or not route
-    bool is_circular = false;
+    bool is_roundtrip = false;
 };
 
 struct RouteInfo {
