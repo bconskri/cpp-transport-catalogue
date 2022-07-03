@@ -60,4 +60,11 @@ namespace request_handler {
     void QueryHandler::LinkCatalogue(const TransportCatalogue &catalogue_) {
         transport_catalogue_ = std::make_shared<TransportCatalogue>(catalogue_);
     }
+
+    void QueryHandler::MapRender([[maybe_unused]] request_handler::Logger *output) {
+        map_render_->SetStops(transport_catalogue_->GetStops());
+        map_render_->SetRoutes(transport_catalogue_->GetRoutes());
+        //
+        map_render_->Render(std::cout); //fixme - replace on outputer stream
+    }
 } //namespace request_handler

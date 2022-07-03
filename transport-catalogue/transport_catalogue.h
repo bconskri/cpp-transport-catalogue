@@ -18,7 +18,7 @@ public:
 
     void CalcRoutesStat();
 
-    [[nodiscard]] const BusStop *GetStopByName(std::string_view stop_name) const;
+    [[nodiscard]] BusStop *GetStopByName(std::string_view stop_name) const;
 
     [[nodiscard]] const BusRoute *GetRouteByName(std::string_view route_name) const;
 
@@ -28,9 +28,12 @@ public:
 
     [[nodiscard]] double GetDistance(const BusStop *stop_from, const BusStop *stop_to);
 
+    [[nodiscard]] const std::unordered_map<std::string_view, BusRoute *>& GetRoutes() const;
+    [[nodiscard]] const std::unordered_map<std::string_view, BusStop *>& GetStops() const;
+
 private:
-    std::deque<BusStop> stops_;                                                    //all stops data
-    std::unordered_map<std::string_view, const BusStop *> stopname_to_stop;         //hash-table for search stop by name
+    std::deque<BusStop> stops_;                                                //all stops data
+    std::unordered_map<std::string_view, BusStop *> stopname_to_stop_;   //hash-table for search stop by name
     std::deque<BusRoute> buses_;
-    std::unordered_map<std::string_view, BusRoute *> busname_to_bus;       //hash-table for search bus by name
+    std::unordered_map<std::string_view, BusRoute *> busname_to_bus_;          //hash-table for search bus by name
 };

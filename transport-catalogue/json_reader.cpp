@@ -52,6 +52,58 @@ namespace json_reader {
         transport_catalogue_->CalcRoutesStat();
     }
 
+    svg::Color NodeAsColor(json::Node &node) {
+        if (node.IsArray()) {
+            if (node.AsArray().size() == 4) {
+                svg::Rgba rgba;
+                rgba.red = node.AsArray()[0].AsInt();
+                rgba.green = node.AsArray()[1].AsInt();
+                rgba.blue = node.AsArray()[2].AsInt();
+                rgba.opacity = node.AsArray()[3].AsDouble();
+                return rgba;
+            } else {
+                svg::Rgb rgb;
+                rgb.red = node.AsArray()[0].AsInt();
+                rgb.green = node.AsArray()[1].AsInt();
+                rgb.blue = node.AsArray()[2].AsInt();
+                return rgb;
+            }
+        } else {
+            return node.AsString();
+        }
+    }
+
+    void JsonData::parse_render_settings(json::Dict &render_settings) {
+        using namespace std::literals;
+        RenderSettings settings;
+
+        settings.width = render_settings.at("width"s).AsDouble();
+        settings.height = render_settings.at("height"s).AsDouble();
+
+        settings.padding = render_settings.at("padding"s).AsDouble();
+
+        settings.line_width = render_settings.at("line_width"s).AsDouble();
+        settings.stop_radius = render_settings.at("stop_radius"s).AsDouble();
+
+        settings.bus_label_font_size = render_settings.at("bus_label_font_size"s).AsInt();
+        settings.bus_label_offset[0] = render_settings.at("bus_label_offset"s).AsArray()[0].AsDouble();
+        settings.bus_label_offset[1] = render_settings.at("bus_label_offset"s).AsArray()[1].AsDouble();
+
+        settings.stop_label_font_size = render_settings.at("stop_label_font_size"s).AsInt();
+        settings.stop_label_offset[0] = render_settings.at("stop_label_offset"s).AsArray()[0].AsDouble();
+        settings.stop_label_offset[1] = render_settings.at("stop_label_offset"s).AsArray()[1].AsDouble();
+
+        settings.underlayer_color = NodeAsColor(render_settings.at("underlayer_color"s));
+        settings.underlayer_width = render_settings.at("underlayer_width"s).AsDouble();
+
+        settings.underlayer_width = render_settings.at("underlayer_width"s).AsDouble();
+        for (auto &node: render_settings.at("color_palette"s).AsArray()) {
+            settings.color_palette.emplace_back(NodeAsColor(node));
+        }
+
+        map_render_->SetSettings(settings);
+    }
+
     void JsonData::PerfomUploadQueries(request_handler::Inputer *input) {
         auto root = json::Load(input->GetStream()).GetRoot();
         parse_perform_upload_queries(root.AsMap().at("base_requests").AsArray());
@@ -62,20 +114,21 @@ namespace json_reader {
         auto root = json::Load(input->GetStream()).GetRoot();
         //создаем пустую структуру ответа json Node
         // в корне ответа в формате json лежит вектор Array
-        root_ = json::Node(json::Array{});
+        output_json_root_ = json::Node(json::Array{});
         parse_perform_stat_queries(root.AsMap().at("stat_requests").AsArray());
         //выводим Node json
-        json::PrintNode(root_, std::cout); //fixme outputer
+        json::PrintNode(output_json_root_, std::cout); //fixme outputer
     }
 
     void JsonData::PerfomQueries(request_handler::Inputer *input,
                                  [[maybe_unused]] request_handler::Logger *output) {
         auto root = json::Load(input->GetStream()).GetRoot();
-        root_ = json::Node(json::Array{});
+        output_json_root_ = json::Node(json::Array{});
         parse_perform_upload_queries(root.AsMap().at("base_requests").AsArray());
         parse_perform_stat_queries(root.AsMap().at("stat_requests").AsArray());
+        parse_render_settings(root.AsMap().at("render_settings").AsMap());
         //выводим Node json
-        json::PrintNode(root_, std::cout); //fixme outputer
+        json::PrintNode(output_json_root_, std::cout); //fixme outputer
     }
 
     void JsonData::parse_perform_stat_queries(std::vector<json::Node> &stat_requests) {
@@ -90,7 +143,7 @@ namespace json_reader {
             } else if (request_.at("type").AsString() == "Stop") {
                 perform_stop_query(request, response);
             }
-            root_.AsArray().push_back(json::Node(std::move(response)));
+            output_json_root_.AsArray().push_back(json::Node(std::move(response)));
         }
     }
 

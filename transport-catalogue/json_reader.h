@@ -20,7 +20,7 @@ namespace json_reader {
         std::istream &GetStream();
 
     private:
-        json::Node root_;
+        json::Node output_json_root_;
 
         //write data from stream into catalogue
         void parse_stop(json::Node &request);
@@ -34,6 +34,8 @@ namespace json_reader {
         void perform_bus_query(json::Node &request, json::Dict &response);
 
         void perform_stop_query(json::Node &request, json::Dict &response);
+
+        void parse_render_settings(json::Dict &render_settings);
     };
 
     template<typename T>

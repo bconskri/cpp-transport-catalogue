@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <set>
 
 /*
  * В этом файле вы можете разместить классы/структуры, которые являются частью предметной области (domain)
@@ -24,6 +25,7 @@ struct BusStop {
 
     std::string name;
     geo::Coordinates coordinates{0L, 0L};
+    std::set<std::string> buses;
     std::unordered_map<std::string, unsigned> distance_to_other_stops;
 };
 

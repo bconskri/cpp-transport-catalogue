@@ -11,7 +11,7 @@ int main() {
 
     std::ios::sync_with_stdio(false);
 
-    TransportCatalogue transport_catalogue{};
+    //TransportCatalogue transport_catalogue{};
     auto in = Inputer::GetInputer(io_stream::Console);
     auto out = Logger::GetLogger(io_stream::Console);
     //auto in_f = Inputer::GetInputer(io_stream::File, ""s);
@@ -19,8 +19,9 @@ int main() {
 
     //perform upload queries & stat queries in one
     auto upload_query_handler = request_handler::QueryHandler::GetHandler(io_type::Json);
-    upload_query_handler->LinkCatalogue(transport_catalogue);
+    //upload_query_handler->LinkCatalogue(transport_catalogue);
     upload_query_handler->PerfomQueries(in, out);
+    upload_query_handler->MapRender(out);
 
     //чтение формата TXT источник Console
 //    TransportCatalogue transport_catalogue{};

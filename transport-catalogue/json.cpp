@@ -353,6 +353,7 @@ namespace json {
         std::visit(
                 [&out](const auto &value) { PrintValue(value, out); },
                 node.GetValue());
+        out << std::endl;
     }
 
     void Print(const Document &doc, std::ostream &out) {

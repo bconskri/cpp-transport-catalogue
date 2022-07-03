@@ -1,6 +1,7 @@
 #pragma once
 
 #include "transport_catalogue.h"
+#include "map_renderer.h"
 
 #include <iostream>
 #include <fstream>
@@ -57,12 +58,12 @@ namespace request_handler {
     public:
         static Inputer *GetInputer(const io_stream datasearch, std::string file_name = "");
 
-        virtual std::istream& GetStream() = 0;
+        virtual std::istream &GetStream() = 0;
     };
 
     class ConsoleInputer final : public Inputer {
     public:
-        std::istream& GetStream() override {
+        std::istream &GetStream() override {
             return std::cin;
         }
     };
@@ -79,7 +80,7 @@ namespace request_handler {
             }
         }
 
-        std::ifstream& GetStream() override {
+        std::ifstream &GetStream() override {
             return ofs_;
         }
 
@@ -126,6 +127,9 @@ namespace request_handler {
     //fabric of query performes
     class QueryHandler {
     public:
+        QueryHandler()
+                : transport_catalogue_(std::make_shared<TransportCatalogue>()),
+                  map_render_(std::make_shared<map_renderer::MapRender>()) {};
 
         virtual ~QueryHandler() = default;
 
@@ -142,9 +146,14 @@ namespace request_handler {
         static QueryHandler *GetHandler(const io_type datatype);
 
         //привязывает транспортный каталог для работы с ним
-        void LinkCatalogue(const TransportCatalogue& catalogue_);
+        void LinkCatalogue(const TransportCatalogue &catalogue_);
+
+        //map renderer
+        void MapRender(request_handler::Logger *output = nullptr);
+
     protected:
         std::shared_ptr<TransportCatalogue> transport_catalogue_;
+        std::shared_ptr<map_renderer::MapRender> map_render_;
     };
 
     template<typename T>
