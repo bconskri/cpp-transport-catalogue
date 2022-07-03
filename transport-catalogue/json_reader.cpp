@@ -9,11 +9,12 @@ namespace json_reader {
     void JsonData::parse_stop(json::Node &request) {
         BusStop stop;
 
-        stop.name = request.AsMap().at("name").AsString();
-        stop.coordinates = {request.AsMap().at("latitude").AsDouble(),
-                            request.AsMap().at("longitude").AsDouble()};
+        auto stop_json = request.AsMap();
+        stop.name = stop_json.at("name").AsString();
+        stop.coordinates = {stop_json.at("latitude").AsDouble(),
+                            stop_json.at("longitude").AsDouble()};
 
-        for (auto &pair: request.AsMap().at("road_distances").AsMap()) {
+        for (auto &pair: stop_json.at("road_distances").AsMap()) {
             stop.distance_to_other_stops[pair.first] = pair.second.AsInt();
         }
         transport_catalogue_->AddStop(std::move(stop));
@@ -21,15 +22,16 @@ namespace json_reader {
 
     void JsonData::parse_bus(json::Node &request) {
         BusRoute route;
-        route.name = request.AsMap().at("name").AsString();
+        auto route_json = request.AsMap();
+        route.name = route_json.at("name").AsString();
 
-        if (request.AsMap().at("is_roundtrip").AsBool()) {
+        if (route_json.at("is_roundtrip").AsBool()) {
             route.is_roundtrip = true;
         } else {
             route.is_roundtrip = false;
         }
 
-        for (auto &stop: request.AsMap().at("stops").AsArray()) {
+        for (auto &stop: route_json.at("stops").AsArray()) {
             route.stops.push_back(stop.AsString());
             route.unique_stops.insert(stop.AsString());
         }
@@ -39,11 +41,10 @@ namespace json_reader {
 
     void JsonData::parse_perform_upload_queries(std::vector<json::Node> &upload_requests) {
         for (auto &request: upload_requests) {
-            if (request.AsMap().at("type").AsString() == "Stop") {
+            auto request_ = request.AsMap();
+            if (request_.at("type").AsString() == "Stop") {
                 parse_stop(request);
-            }
-
-            if (request.AsMap().at("type").AsString() == "Bus") {
+            } else if (request_.at("type").AsString() == "Bus") {
                 parse_bus(request);
             }
         }
@@ -61,8 +62,7 @@ namespace json_reader {
         auto root = json::Load(input->GetStream()).GetRoot();
         //создаем пустую структуру ответа json Node
         // в корне ответа в формате json лежит вектор Array
-        json::Array result;
-        root_ = json::Node(move(result));
+        root_ = json::Node(json::Array{});
         parse_perform_stat_queries(root.AsMap().at("stat_requests").AsArray());
         //выводим Node json
         json::PrintNode(root_, std::cout); //fixme outputer
@@ -71,6 +71,7 @@ namespace json_reader {
     void JsonData::PerfomQueries(request_handler::Inputer *input,
                                  [[maybe_unused]] request_handler::Logger *output) {
         auto root = json::Load(input->GetStream()).GetRoot();
+        root_ = json::Node(json::Array{});
         parse_perform_upload_queries(root.AsMap().at("base_requests").AsArray());
         parse_perform_stat_queries(root.AsMap().at("stat_requests").AsArray());
         //выводим Node json
@@ -81,16 +82,14 @@ namespace json_reader {
         for (auto &request: stat_requests) {
             using namespace std::literals;
             json::Dict response;
+            auto request_ = request.AsMap();
+            response["request_id"s] = request_.at("id").AsInt();
 
-            response["id"s] = request.AsMap().at("id").AsInt();
-
-            if (request.AsMap().at("type").AsString() == "Bus")
+            if (request_.at("type").AsString() == "Bus") {
                 perform_bus_query(request, response);
-
-            if (request.AsMap().at("type").AsString() == "Stop")
+            } else if (request_.at("type").AsString() == "Stop") {
                 perform_stop_query(request, response);
-
-            auto a = root_.AsArray();
+            }
             root_.AsArray().push_back(json::Node(std::move(response)));
         }
     }
@@ -118,7 +117,7 @@ namespace json_reader {
         if (buses_for_stop == std::nullopt) {
             response["error_message"s] = json::Node("not found"s);
         } else if (buses_for_stop->empty()) {
-            response["buses"s] = json::Node(json::Dict{});
+            response["buses"s] = json::Node(json::Array{});
         } else {
             json::Array buses;
             //
