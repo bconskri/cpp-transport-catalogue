@@ -14,10 +14,14 @@ void TransportCatalogue::AddStop(BusStop &&stop) {
 void TransportCatalogue::AddRoute(BusRoute &&route) {
     if (busname_to_bus_.count(route.name) == 0) {
         auto &ref = buses_.emplace_back(std::move(route));
+        //для некольцевого маршрута запомним последнюю остановку
+        ref.end_stop = ref.stops.back();
+        //
         busname_to_bus_.insert({std::string_view(ref.name), &ref});
 
         //if it's not a circular route we need to build reverse path
-        if (!ref.is_roundtrip) {
+        //if route like A - B - A  reverse path not needed
+        if (!ref.is_roundtrip && ref.stops.front() != ref.end_stop) {
             for (int i = ref.stops.size() - 2; i >= 0; --i) {
                 ref.stops.emplace_back(ref.stops[i]);
             }

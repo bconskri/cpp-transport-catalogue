@@ -119,14 +119,22 @@ namespace map_renderer {
         std::unordered_map<std::string_view, BusRoute *> routes_;
         svg::Document doc_;
 
-        struct BusRouteSort {
-            bool operator()(const BusRoute *lhs, const BusRoute *rhs) const {
+        template<typename T>
+        struct LexSort {
+            bool operator()(const T *lhs, const T *rhs) const {
                 return std::lexicographical_compare(lhs->name.begin(), lhs->name.end(),
                                                     rhs->name.begin(), rhs->name.end());
             }
         };
 
-        void RenderBusRoutes(SphereProjector &projector, std::set<const BusRoute *, BusRouteSort> &routes_);
+        void RenderBusRoutesLinesLayer(const SphereProjector &projector,
+                                       std::set<const BusRoute *, LexSort<BusRoute>> &routes_);
+        void RenderRoutesNamesLayer(const SphereProjector &projector,
+                                               std::set<const BusRoute *, LexSort<BusRoute>> &routes_);
+        void RenderStopsLayer(const SphereProjector &projector,
+                              std::set<const BusStop *, LexSort<BusStop>> &stops_to_render);
+        void RenderStopsNamesLayer(const SphereProjector &projector,
+                                   std::set<const BusStop *, LexSort<BusStop>> &stops_to_render);
 
     };
 } //map_renderer
