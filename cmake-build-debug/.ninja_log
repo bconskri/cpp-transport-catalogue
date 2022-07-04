@@ -89,3 +89,7 @@
 9966	10236	1656923448713804240	TransportCatalogue	9a926422dd24f8d6
 5	6745	1656924155058017633	CMakeFiles/TransportCatalogue.dir/transport-catalogue/transport_catalogue.cpp.o	43d94101062f55b
 6745	6966	1656924155259761615	TransportCatalogue	9a926422dd24f8d6
+10	3973	1656924413857396765	CMakeFiles/TransportCatalogue.dir/transport-catalogue/json_reader.cpp.o	9f8b5998fe0cc02f
+3973	4144	1656924414033061122	TransportCatalogue	9a926422dd24f8d6
+23	3920	1656924644061360957	CMakeFiles/TransportCatalogue.dir/transport-catalogue/json_reader.cpp.o	9f8b5998fe0cc02f
+3921	4097	1656924644234530925	TransportCatalogue	9a926422dd24f8d6

@@ -25,11 +25,7 @@ namespace json_reader {
         auto route_json = request.AsMap();
         route.name = route_json.at("name").AsString();
 
-        if (route_json.at("is_roundtrip").AsBool()) {
-            route.is_roundtrip = true;
-        } else {
-            route.is_roundtrip = false;
-        }
+        route.is_roundtrip = route_json.at("is_roundtrip").AsBool();
 
         for (auto &stop: route_json.at("stops").AsArray()) {
             route.stops.push_back(stop.AsString());
