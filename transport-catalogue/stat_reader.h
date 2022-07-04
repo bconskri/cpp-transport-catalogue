@@ -19,28 +19,16 @@ namespace stat_reader {
 
     class ConsoleLogger : public Logger {
     public:
-        void log(const std::string_view &msg) override {
-            std::cout << msg;
-        };
+        void log(const std::string_view &msg) override;
     };
 
     class FileLogger : public Logger {
     public:
-        FileLogger(const std::string &filename) {
-            //std::ofstream file(filename);
-            //ofs. = &file;
-            ofs.open(filename);
-        }
+        FileLogger(const std::string &filename);
 
-        ~FileLogger() {
-            if (ofs) {
-                ofs.close();
-            }
-        }
+        ~FileLogger();
 
-        void log(const std::string_view &msg) override {
-            ofs << msg;
-        }
+        void log(const std::string_view &msg) override;
 
     private:
         std::ofstream ofs;
@@ -61,8 +49,7 @@ namespace stat_reader {
 //realize StreamData query performerser
     class StreamData : public QueryHandler {
     public:
-        StreamData(std::istream &input = std::cin)
-                : input_(input) {}
+        StreamData(std::istream &input = std::cin);
 
 
         //realize loader from stream
@@ -78,7 +65,7 @@ namespace stat_reader {
         void OutputStopInfo(TransportCatalogue &transport_catalogue,
                             const std::string_view stopname_to_output, Logger *output) const;
 
-        void parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
-                                        const int n, Logger *output = nullptr);
+        void ParsePerformStatQueries(TransportCatalogue &transport_catalogue,
+                                     const int lcount, Logger *output = nullptr);
     };
 }

@@ -89,7 +89,8 @@ TransportCatalogue::GetBusesForStopInfo(const std::string_view stop_name) const 
         return std::nullopt;
     }
     for (const auto &bus: busname_to_bus) {
-        auto tmp = std::find(bus.second->stops.begin(), bus.second->stops.end(),stop_name);if (tmp != bus.second->stops.end()) {
+        auto tmp = std::find(bus.second->stops.begin(), bus.second->stops.end(), stop_name);
+        if (tmp != bus.second->stops.end()) {
             found_buses.insert(bus.second->name);
         }
     }
@@ -107,4 +108,11 @@ double TransportCatalogue::GetDistance(const BusStop *stop_from, const BusStop *
             return 0L;
         }
     }
+}
+
+RouteInfo::RouteInfo(std::string_view name, size_t stops_count, size_t unique_stops, double route_length,
+                     double curvature)
+        : name(name), stops_on_route(stops_count), unique_stops(unique_stops), route_length_meters(route_length),
+          curvature(curvature) {
+
 }

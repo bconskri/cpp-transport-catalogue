@@ -53,8 +53,8 @@ namespace stat_reader {
         }
     }
 
-    void StreamData::parse_perform_stat_queries(TransportCatalogue &transport_catalogue,
-                                                const int lcount, Logger *output) {
+    void StreamData::ParsePerformStatQueries(TransportCatalogue &transport_catalogue,
+                                             const int lcount, Logger *output) {
         using namespace std::literals;
 
         std::string line;
@@ -94,7 +94,7 @@ namespace stat_reader {
         if (output == nullptr) {
             output = new ConsoleLogger();
         }
-        this->parse_perform_stat_queries(transport_catalogue, queries_count, output);
+        this->ParsePerformStatQueries(transport_catalogue, queries_count, output);
     }
 
     QueryHandler *QueryHandler::GetHandler(const io_type datasearch, std::istream &input) {
@@ -126,4 +126,25 @@ namespace stat_reader {
         }
         return p;
     }
+
+    void ConsoleLogger::log(const std::string_view &msg) {
+        std::cout << msg;
+    };
+
+    FileLogger::FileLogger(const std::string &filename) {
+        ofs.open(filename);
+    }
+
+    FileLogger::~FileLogger() {
+        if (ofs) {
+            ofs.close();
+        }
+    }
+
+    void FileLogger::log(const std::string_view &msg) {
+        ofs << msg;
+    }
+
+    StreamData::StreamData(std::istream &input)
+            : input_(input) {}
 }

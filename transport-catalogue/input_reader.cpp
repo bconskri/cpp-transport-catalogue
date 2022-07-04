@@ -144,4 +144,7 @@ namespace input_reader {
         }
         return p;
     }
+
+    StreamData::StreamData(std::istream &input)
+            : input_(input) {}
 }
