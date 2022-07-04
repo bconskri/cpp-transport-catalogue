@@ -21,7 +21,8 @@ void TransportCatalogue::AddRoute(BusRoute &&route) {
 
         //if it's not a circular route we need to build reverse path
         //if route like A - B - A  reverse path not needed
-        if (!ref.is_roundtrip && ref.stops.front() != ref.end_stop) {
+        //if (!ref.is_roundtrip && ref.stops.front() != ref.end_stop) {
+        if (!ref.is_roundtrip) {
             for (int i = ref.stops.size() - 2; i >= 0; --i) {
                 ref.stops.emplace_back(ref.stops[i]);
             }
