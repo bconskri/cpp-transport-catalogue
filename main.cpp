@@ -21,7 +21,7 @@ int main() {
     auto upload_query_handler = request_handler::QueryHandler::GetHandler(io_type::Json);
     //upload_query_handler->LinkCatalogue(transport_catalogue);
     upload_query_handler->PerfomQueries(in, out);
-    upload_query_handler->MapRender(out);
+    //upload_query_handler->MapRender(out);
 
     //чтение формата TXT источник Console
 //    TransportCatalogue transport_catalogue{};

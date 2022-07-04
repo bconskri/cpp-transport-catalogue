@@ -36,6 +36,8 @@ namespace json_reader {
         void perform_stop_query(json::Node &request, json::Dict &response);
 
         void parse_render_settings(json::Dict &render_settings);
+
+        void perform_map_query(json::Dict &response);
     };
 
     template<typename T>

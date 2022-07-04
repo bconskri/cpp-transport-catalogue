@@ -5,6 +5,8 @@
 #include "json.h"
 #include "domain.h"
 
+#include <sstream>
+
 namespace json_reader {
     void JsonData::parse_stop(json::Node &request) {
         BusStop stop;
@@ -121,8 +123,8 @@ namespace json_reader {
         auto root = json::Load(input->GetStream()).GetRoot();
         output_json_root_ = json::Node(json::Array{});
         parse_perform_upload_queries(root.AsMap().at("base_requests").AsArray());
-        parse_perform_stat_queries(root.AsMap().at("stat_requests").AsArray());
         parse_render_settings(root.AsMap().at("render_settings").AsMap());
+        parse_perform_stat_queries(root.AsMap().at("stat_requests").AsArray());
         //выводим Node json
         json::PrintNode(output_json_root_, std::cout); //fixme outputer
     }
@@ -138,9 +140,21 @@ namespace json_reader {
                 perform_bus_query(request, response);
             } else if (request_.at("type").AsString() == "Stop") {
                 perform_stop_query(request, response);
+            } else if (request_.at("type").AsString() == "Map") {
+                perform_map_query(response);
             }
             output_json_root_.AsArray().push_back(json::Node(std::move(response)));
         }
+    }
+
+    void JsonData::perform_map_query(json::Dict &response) {
+        std::ostringstream map_rendered;
+        map_render_->SetStops(transport_catalogue_->GetStops());
+        map_render_->SetRoutes(transport_catalogue_->GetRoutes());
+        //
+        map_render_->Render(map_rendered);
+        //
+        response["map"] = json::Node(map_rendered.str());
     }
 
     void JsonData::perform_bus_query(json::Node &request, json::Dict &response) {
