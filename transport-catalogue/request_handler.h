@@ -63,26 +63,16 @@ namespace request_handler {
 
     class ConsoleInputer final : public Inputer {
     public:
-        std::istream &GetStream() override {
-            return std::cin;
-        }
+        std::istream &GetStream() override;
     };
 
     class FileInputer final : public Inputer {
     public:
-        FileInputer(const std::string &filename) {
-            ofs_.open(filename);
-        }
+        FileInputer(const std::string &filename);
 
-        ~FileInputer() {
-            if (ofs_) {
-                ofs_.close();
-            }
-        }
+        ~FileInputer();
 
-        std::ifstream &GetStream() override {
-            return ofs_;
-        }
+        std::ifstream &GetStream() override;
 
     private:
         std::ifstream ofs_;
@@ -97,28 +87,16 @@ namespace request_handler {
 
     class ConsoleLogger final : public Logger {
     public:
-        void log(const std::string_view &msg) override {
-            std::cout << msg;
-        };
+        void log(const std::string_view &msg) override;
     };
 
     class FileLogger final : public Logger {
     public:
-        FileLogger(const std::string &filename) {
-            //std::ofstream file(filename);
-            //ofs. = &file;
-            ofs.open(filename);
-        }
+        FileLogger(const std::string &filename);
 
-        ~FileLogger() {
-            if (ofs) {
-                ofs.close();
-            }
-        }
+        ~FileLogger();
 
-        void log(const std::string_view &msg) override {
-            ofs << msg;
-        }
+        void log(const std::string_view &msg) override;
 
     private:
         std::ofstream ofs;

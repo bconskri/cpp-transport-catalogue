@@ -8,7 +8,7 @@
 #include <sstream>
 
 namespace json_reader {
-    void JsonData::parse_stop(json::Node &request) {
+    void JsonData::ParseStop(json::Node &request) {
         BusStop stop;
 
         auto stop_json = request.AsMap();
@@ -22,7 +22,7 @@ namespace json_reader {
         transport_catalogue_->AddStop(std::move(stop));
     }
 
-    void JsonData::parse_bus(json::Node &request) {
+    void JsonData::ParseBus(json::Node &request) {
         BusRoute route;
         auto route_json = request.AsMap();
         route.name = route_json.at("name").AsString();
@@ -37,13 +37,13 @@ namespace json_reader {
         transport_catalogue_->AddRoute(std::move(route));
     }
 
-    void JsonData::parse_perform_upload_queries(std::vector<json::Node> &upload_requests) {
+    void JsonData::ParsePerformUploadQueries(std::vector<json::Node> &upload_requests) {
         for (auto &request: upload_requests) {
             auto request_ = request.AsMap();
             if (request_.at("type").AsString() == "Stop") {
-                parse_stop(request);
+                ParseStop(request);
             } else if (request_.at("type").AsString() == "Bus") {
-                parse_bus(request);
+                ParseBus(request);
             }
         }
         //recalc route stats after all data added
@@ -71,7 +71,7 @@ namespace json_reader {
         }
     }
 
-    void JsonData::parse_render_settings(json::Dict &render_settings) {
+    void JsonData::ParseRenderSettings(json::Dict &render_settings) {
         using namespace std::literals;
         RenderSettings settings;
 
@@ -104,7 +104,7 @@ namespace json_reader {
 
     void JsonData::PerfomUploadQueries(request_handler::Inputer *input) {
         auto root = json::Load(input->GetStream()).GetRoot();
-        parse_perform_upload_queries(root.AsMap().at("base_requests").AsArray());
+        ParsePerformUploadQueries(root.AsMap().at("base_requests").AsArray());
     }
 
     void JsonData::PerfomStatQueries(request_handler::Inputer *input,
@@ -113,7 +113,7 @@ namespace json_reader {
         //создаем пустую структуру ответа json Node
         // в корне ответа в формате json лежит вектор Array
         output_json_root_ = json::Node(json::Array{});
-        parse_perform_stat_queries(root.AsMap().at("stat_requests").AsArray());
+        ParsePerformStatQueries(root.AsMap().at("stat_requests").AsArray());
         //выводим Node json
         json::PrintNode(output_json_root_, std::cout); //fixme outputer
     }
@@ -122,14 +122,14 @@ namespace json_reader {
                                  [[maybe_unused]] request_handler::Logger *output) {
         auto root = json::Load(input->GetStream()).GetRoot();
         output_json_root_ = json::Node(json::Array{});
-        parse_perform_upload_queries(root.AsMap().at("base_requests").AsArray());
-        parse_render_settings(root.AsMap().at("render_settings").AsMap());
-        parse_perform_stat_queries(root.AsMap().at("stat_requests").AsArray());
+        ParsePerformUploadQueries(root.AsMap().at("base_requests").AsArray());
+        ParseRenderSettings(root.AsMap().at("render_settings").AsMap());
+        ParsePerformStatQueries(root.AsMap().at("stat_requests").AsArray());
         //выводим Node json
         json::PrintNode(output_json_root_, std::cout); //fixme outputer
     }
 
-    void JsonData::parse_perform_stat_queries(std::vector<json::Node> &stat_requests) {
+    void JsonData::ParsePerformStatQueries(std::vector<json::Node> &stat_requests) {
         for (auto &request: stat_requests) {
             using namespace std::literals;
             json::Dict response;
@@ -137,17 +137,17 @@ namespace json_reader {
             response["request_id"s] = request_.at("id").AsInt();
 
             if (request_.at("type").AsString() == "Bus") {
-                perform_bus_query(request, response);
+                PerformBusQuery(request, response);
             } else if (request_.at("type").AsString() == "Stop") {
-                perform_stop_query(request, response);
+                PerformStopQuery(request, response);
             } else if (request_.at("type").AsString() == "Map") {
-                perform_map_query(response);
+                PerformMapQuery(response);
             }
             output_json_root_.AsArray().push_back(json::Node(std::move(response)));
         }
     }
 
-    void JsonData::perform_map_query(json::Dict &response) {
+    void JsonData::PerformMapQuery(json::Dict &response) {
         std::ostringstream map_rendered;
         map_render_->SetStops(transport_catalogue_->GetStops());
         map_render_->SetRoutes(transport_catalogue_->GetRoutes());
@@ -157,7 +157,7 @@ namespace json_reader {
         response["map"] = json::Node(map_rendered.str());
     }
 
-    void JsonData::perform_bus_query(json::Node &request, json::Dict &response) {
+    void JsonData::PerformBusQuery(json::Node &request, json::Dict &response) {
         using namespace std::literals;
         auto route = transport_catalogue_->GetRouteInfo(request.AsMap().at("name").AsString());
 
@@ -172,7 +172,7 @@ namespace json_reader {
         }
     }
 
-    void JsonData::perform_stop_query(json::Node &request, json::Dict &response) {
+    void JsonData::PerformStopQuery(json::Node &request, json::Dict &response) {
         using namespace std::literals;
         std::optional<std::set<std::string_view>> buses_for_stop = transport_catalogue_->GetBusesForStopInfo(
                 request.AsMap().at("name").AsString());

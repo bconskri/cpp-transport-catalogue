@@ -67,4 +67,40 @@ namespace request_handler {
         //
         map_render_->Render(std::cout); //fixme - replace on outputer stream
     }
+
+    void ConsoleLogger::log(const std::string_view &msg) {
+        std::cout << msg;
+    }
+
+    FileLogger::FileLogger(const std::string &filename) {
+        ofs.open(filename);
+    }
+
+    FileLogger::~FileLogger() {
+        if (ofs) {
+            ofs.close();
+        }
+    }
+
+    void FileLogger::log(const std::string_view &msg) {
+        ofs << msg;
+    }
+
+    FileInputer::FileInputer(const std::string &filename) {
+        ofs_.open(filename);
+    }
+
+    FileInputer::~FileInputer() {
+        if (ofs_) {
+            ofs_.close();
+        }
+    }
+
+    std::ifstream &FileInputer::GetStream() {
+        return ofs_;
+    }
+
+    std::istream &ConsoleInputer::GetStream() {
+        return std::cin;
+    }
 } //namespace request_handler

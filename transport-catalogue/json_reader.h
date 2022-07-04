@@ -23,21 +23,21 @@ namespace json_reader {
         json::Node output_json_root_;
 
         //write data from stream into catalogue
-        void parse_stop(json::Node &request);
+        void ParseStop(json::Node &request);
 
-        void parse_bus(json::Node &request);
+        void ParseBus(json::Node &request);
 
-        void parse_perform_upload_queries(std::vector<json::Node> &upload_requests);
+        void ParsePerformUploadQueries(std::vector<json::Node> &upload_requests);
 
-        void parse_perform_stat_queries(std::vector<json::Node> &stat_requests);
+        void ParsePerformStatQueries(std::vector<json::Node> &stat_requests);
 
-        void perform_bus_query(json::Node &request, json::Dict &response);
+        void PerformBusQuery(json::Node &request, json::Dict &response);
 
-        void perform_stop_query(json::Node &request, json::Dict &response);
+        void PerformStopQuery(json::Node &request, json::Dict &response);
 
-        void parse_render_settings(json::Dict &render_settings);
+        void ParseRenderSettings(json::Dict &render_settings);
 
-        void perform_map_query(json::Dict &response);
+        void PerformMapQuery(json::Dict &response);
     };
 
     template<typename T>

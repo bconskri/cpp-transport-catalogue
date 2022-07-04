@@ -24,8 +24,8 @@ namespace txt_reader {
 
     private:
         //write data from stream into catalogue
-        void parse_perform_stat_queries(const int q_count, request_handler::Inputer *input,
-                                        request_handler::Logger *output = nullptr);
+        void ParsePerformStatQueries(const int q_count, request_handler::Inputer *input,
+                                     request_handler::Logger *output = nullptr);
 
         void OutputBusInfo(const std::string_view busname_to_output, request_handler::Logger *output) const;
 

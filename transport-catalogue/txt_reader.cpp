@@ -179,8 +179,8 @@ namespace txt_reader {
         }
     }
 
-    void TxtData::parse_perform_stat_queries(const int q_count, request_handler::Inputer *input,
-                                             request_handler::Logger *output) {
+    void TxtData::ParsePerformStatQueries(const int q_count, request_handler::Inputer *input,
+                                          request_handler::Logger *output) {
         using namespace std::literals;
         auto& input_ = input->GetStream();
 
@@ -223,7 +223,7 @@ namespace txt_reader {
         if (output == nullptr) {
             output = new request_handler::ConsoleLogger();
         }
-        this->parse_perform_stat_queries(queries_count, input, output);
+        this->ParsePerformStatQueries(queries_count, input, output);
     }
 
     void TxtData::PerfomQueries(request_handler::Inputer *input,
