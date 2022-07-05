@@ -6,6 +6,107 @@
 #include <map>
 
 namespace json {
+    bool Node::IsInt() const {
+        return std::holds_alternative<int>(*this);
+    }
+
+    bool Node::IsDouble() const {
+        return std::holds_alternative<double>(*this) ||
+               std::holds_alternative<int>(*this);
+    }
+
+    bool Node::IsPureDouble() const {
+        return std::holds_alternative<double>(*this);
+    }
+
+    bool Node::IsBool() const {
+        return std::holds_alternative<bool>(*this);
+    }
+
+    bool Node::IsString() const {
+        return std::holds_alternative<std::string>(*this);
+    }
+
+    bool Node::IsNull() const {
+        return std::holds_alternative<std::nullptr_t>(*this);
+    }
+
+    bool Node::IsArray() const {
+        return std::holds_alternative<std::vector<Node>>(*this);
+    }
+
+    bool Node::IsMap() const {
+        return std::holds_alternative<std::map<std::string, Node>>(*this);
+    }
+
+    int &Node::AsInt() {
+        if (IsInt()) {
+            return std::get<int>(*this);
+        }
+        throw std::logic_error("AsInt()");
+    }
+
+    double Node::AsDouble() {
+        if (IsPureDouble()) {
+            return std::get<double>(*this);
+        } else if (IsDouble()) {
+            return static_cast<double>(std::get<int>(*this));
+        }
+        throw std::logic_error("AsDouble()");
+    }
+
+    bool &Node::AsBool() {
+        if (IsBool()) {
+            return std::get<bool>(*this);
+        }
+        throw std::logic_error("AsBool()");
+    }
+
+    std::string &Node::AsString() {
+        if (IsString()) {
+            return std::get<std::string>(*this);
+        }
+        throw std::logic_error("AsString()");
+    }
+
+    json::Array &Node::AsArray() {
+        if (IsArray()) {
+            return std::get<std::vector<Node>>(*this);
+        }
+        throw std::logic_error("AsArray()");
+    }
+
+    json::Dict &Node::AsMap() {
+        if (IsMap()) {
+            return std::get<std::map<std::string, Node>>(*this);
+        }
+        throw std::logic_error("AsMap()");
+    }
+
+    const std::variant<std::nullptr_t, std::vector<Node>, std::map<std::string, Node>,
+            bool, int, double, std::string> &Node::GetValue() const {
+        return *this;
+    }
+
+    PrintContext::PrintContext(std::ostream &out)
+            : out(out) {
+    }
+
+    PrintContext::PrintContext(std::ostream &out, int indent_step, int indent)
+            : out(out), indent_step(indent_step), indent(indent) {
+    }
+
+    void PrintContext::PrintIndent() const {
+        for (int i = 0; i < indent; ++i) {
+            out.put(' ');
+        }
+    }
+
+    // Возвращает новый контекст вывода с увеличенным смещением
+    PrintContext PrintContext::Indented() const {
+        return {out, indent_step, indent_step + indent};
+    }
+
     Document::Document(Node root)
             : root_(move(root)) {
     }
@@ -366,7 +467,7 @@ namespace json {
         //ctx.out << std::endl;
     }
 
-    bool operator==( Node &lhs, const Array &rhs) {
+    bool operator==(Node &lhs, const Array &rhs) {
         return lhs.AsArray() == rhs;
     }
 } //namespace json

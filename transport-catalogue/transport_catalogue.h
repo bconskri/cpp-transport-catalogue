@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <set>
 #include <string_view>
+#include <optional>
 
 class TransportCatalogue {
 public:

@@ -19,85 +19,36 @@ namespace json {
         using variant::variant;
 
 
-        bool IsInt() const {
-            return std::holds_alternative<int>(*this);
-        }
+        bool IsInt() const;
 
-        bool IsDouble() const {
-            return std::holds_alternative<double>(*this) ||
-                   std::holds_alternative<int>(*this);
-        }
+        bool IsDouble() const;
 
-        bool IsPureDouble() const {
-            return std::holds_alternative<double>(*this);
-        }
+        bool IsPureDouble() const;
 
-        bool IsBool() const {
-            return std::holds_alternative<bool>(*this);
-        }
+        bool IsBool() const;
 
-        bool IsString() const {
-            return std::holds_alternative<std::string>(*this);
-        }
+        bool IsString() const;
 
-        bool IsNull() const {
-            return std::holds_alternative<std::nullptr_t>(*this);
-        }
+        bool IsNull() const;
 
-        bool IsArray() const {
-            return std::holds_alternative<std::vector<Node>>(*this);
-        }
+        bool IsArray() const;
 
-        bool IsMap() const {
-            return std::holds_alternative<std::map<std::string, Node>>(*this);
-        }
+        bool IsMap() const;
 
-        auto &AsInt() {
-            if (IsInt()) {
-                return std::get<int>(*this);
-            }
-            throw std::logic_error("AsInt()");
-        }
+        int &AsInt();
 
-        double AsDouble() {
-            if (IsPureDouble()) {
-                return std::get<double>(*this);
-            } else if (IsDouble()) {
-                return static_cast<double>(std::get<int>(*this));
-            }
-            throw std::logic_error("AsDouble()");
-        }
+        double AsDouble();
 
-        auto &AsBool() {
-            if (IsBool()) {
-                return std::get<bool>(*this);
-            }
-            throw std::logic_error("AsBool()");
-        }
+        bool &AsBool();
 
-        auto &AsString() {
-            if (IsString()) {
-                return std::get<std::string>(*this);
-            }
-            throw std::logic_error("AsString()");
-        }
+        std::string &AsString();
 
-        auto &AsArray()  {
-            if (IsArray()) {
-                return std::get<std::vector<Node>>(*this);
-            }
-            throw std::logic_error("AsArray()");
-        }
+        Array &AsArray();
 
-        auto &AsMap()  {
-            if (IsMap()) {
-                return std::get<std::map<std::string, Node>>(*this);
-            }
-            throw std::logic_error("AsMap()");
-        }
+        Dict &AsMap();
 
         const std::variant<std::nullptr_t, std::vector<Node>, std::map<std::string, Node>,
-                bool, int, double, std::string> &GetValue() const { return *this; }
+                bool, int, double, std::string> &GetValue() const;
     };
 
     class Document {
@@ -125,24 +76,14 @@ namespace json {
         int indent_step = 4;
         int indent = 0;
 
-        PrintContext(std::ostream &out)
-                : out(out) {
-        }
+        PrintContext(std::ostream &out);
 
-        PrintContext(std::ostream &out, int indent_step, int indent = 0)
-                : out(out), indent_step(indent_step), indent(indent) {
-        }
+        PrintContext(std::ostream &out, int indent_step, int indent = 0);
 
-        void PrintIndent() const {
-            for (int i = 0; i < indent; ++i) {
-                out.put(' ');
-            }
-        }
+        void PrintIndent() const;
 
         // Возвращает новый контекст вывода с увеличенным смещением
-        PrintContext Indented() const {
-            return {out, indent_step, indent_step + indent};
-        }
+        PrintContext Indented() const;
     };
 
     template<typename Value>
