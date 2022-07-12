@@ -2,12 +2,14 @@
 
 #include "request_handler.h"
 #include "transport_catalogue.h"
-#include "json.h"
+#include "json_builder.h"
 
 namespace json_reader {
     //realize StreamData query performerser
     class JsonData : public request_handler::QueryHandler {
     public:
+        JsonData() : output_json_builder_(*new json::Builder{}) {};
+
         //realize loader from stream
         void PerfomUploadQueries(request_handler::Inputer *input) override;
 
@@ -20,7 +22,7 @@ namespace json_reader {
         std::istream &GetStream();
 
     private:
-        json::Node output_json_root_;
+        json::Builder& output_json_builder_;
 
         //write data from stream into catalogue
         void ParseStop(json::Node &request);
@@ -31,13 +33,13 @@ namespace json_reader {
 
         void ParsePerformStatQueries(std::vector<json::Node> &stat_requests);
 
-        void PerformBusQuery(json::Node &request, json::Dict &response);
+        void PerformBusQuery(json::Node &request);
 
-        void PerformStopQuery(json::Node &request, json::Dict &response);
+        void PerformStopQuery(json::Node &request);
 
         void ParseRenderSettings(json::Dict &render_settings);
 
-        void PerformMapQuery(json::Dict &response);
+        void PerformMapQuery();
     };
 
     template<typename T>

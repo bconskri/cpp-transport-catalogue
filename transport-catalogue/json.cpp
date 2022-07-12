@@ -35,7 +35,7 @@ namespace json {
         return std::holds_alternative<std::vector<Node>>(*this);
     }
 
-    bool Node::IsMap() const {
+    bool Node::IsDict() const {
         return std::holds_alternative<std::map<std::string, Node>>(*this);
     }
 
@@ -76,15 +76,19 @@ namespace json {
         throw std::logic_error("AsArray()");
     }
 
-    json::Dict &Node::AsMap() {
-        if (IsMap()) {
+    json::Dict &Node::AsDict() {
+        if (IsDict()) {
             return std::get<std::map<std::string, Node>>(*this);
         }
-        throw std::logic_error("AsMap()");
+        throw std::logic_error("AsDict()");
     }
 
     const std::variant<std::nullptr_t, std::vector<Node>, std::map<std::string, Node>,
             bool, int, double, std::string> &Node::GetValue() const {
+        return *this;
+    }
+
+    Node::Value &Node::GetValue() {
         return *this;
     }
 

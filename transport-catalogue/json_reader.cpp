@@ -1,8 +1,7 @@
 #include "json_reader.h"
-
+#include "json_builder.h"
 #include "request_handler.h"
 #include "transport_catalogue.h"
-#include "json.h"
 #include "domain.h"
 
 #include <sstream>
@@ -11,12 +10,12 @@ namespace json_reader {
     void JsonData::ParseStop(json::Node &request) {
         BusStop stop;
 
-        auto stop_json = request.AsMap();
+        auto stop_json = request.AsDict();
         stop.name = stop_json.at("name").AsString();
         stop.coordinates = {stop_json.at("latitude").AsDouble(),
                             stop_json.at("longitude").AsDouble()};
 
-        for (auto &pair: stop_json.at("road_distances").AsMap()) {
+        for (auto &pair: stop_json.at("road_distances").AsDict()) {
             stop.distance_to_other_stops[pair.first] = pair.second.AsInt();
         }
         transport_catalogue_->AddStop(std::move(stop));
@@ -24,7 +23,7 @@ namespace json_reader {
 
     void JsonData::ParseBus(json::Node &request) {
         BusRoute route;
-        auto route_json = request.AsMap();
+        auto route_json = request.AsDict();
         route.name = route_json.at("name").AsString();
 
         route.is_roundtrip = route_json.at("is_roundtrip").AsBool();
@@ -39,7 +38,7 @@ namespace json_reader {
 
     void JsonData::ParsePerformUploadQueries(std::vector<json::Node> &upload_requests) {
         for (auto &request: upload_requests) {
-            auto request_ = request.AsMap();
+            auto request_ = request.AsDict();
             if (request_.at("type").AsString() == "Stop") {
                 ParseStop(request);
             } else if (request_.at("type").AsString() == "Bus") {
@@ -104,90 +103,91 @@ namespace json_reader {
 
     void JsonData::PerfomUploadQueries(request_handler::Inputer *input) {
         auto root = json::Load(input->GetStream()).GetRoot();
-        ParsePerformUploadQueries(root.AsMap().at("base_requests").AsArray());
+        ParsePerformUploadQueries(root.AsDict().at("base_requests").AsArray());
     }
 
     void JsonData::PerfomStatQueries(request_handler::Inputer *input,
                                      [[maybe_unused]] request_handler::Logger *output) {
         auto root = json::Load(input->GetStream()).GetRoot();
-        //создаем пустую структуру ответа json Node
-        // в корне ответа в формате json лежит вектор Array
-        output_json_root_ = json::Node(json::Array{});
-        ParsePerformStatQueries(root.AsMap().at("stat_requests").AsArray());
+        //
+        ParsePerformStatQueries(root.AsDict().at("stat_requests").AsArray());
         //выводим Node json
-        json::PrintNode(output_json_root_, std::cout); //fixme outputer
+        json::PrintNode(output_json_builder_.Build(), std::cout); //fixme outputer
     }
 
     void JsonData::PerfomQueries(request_handler::Inputer *input,
                                  [[maybe_unused]] request_handler::Logger *output) {
         auto root = json::Load(input->GetStream()).GetRoot();
-        output_json_root_ = json::Node(json::Array{});
-        ParsePerformUploadQueries(root.AsMap().at("base_requests").AsArray());
-        ParseRenderSettings(root.AsMap().at("render_settings").AsMap());
-        ParsePerformStatQueries(root.AsMap().at("stat_requests").AsArray());
+        //
+        ParsePerformUploadQueries(root.AsDict().at("base_requests").AsArray());
+        ParseRenderSettings(root.AsDict().at("render_settings").AsDict());
+        //
+        ParsePerformStatQueries(root.AsDict().at("stat_requests").AsArray());
         //выводим Node json
-        json::PrintNode(output_json_root_, std::cout); //fixme outputer
+        json::PrintNode(output_json_builder_.Build(), std::cout); //fixme outputer
     }
 
     void JsonData::ParsePerformStatQueries(std::vector<json::Node> &stat_requests) {
+        output_json_builder_.StartArray();
+
         for (auto &request: stat_requests) {
             using namespace std::literals;
-            json::Dict response;
-            auto request_ = request.AsMap();
-            response["request_id"s] = request_.at("id").AsInt();
+            auto request_ = request.AsDict();
+
+            output_json_builder_.StartDict().Key("request_id"s).Value(request_.at("id").AsInt());
 
             if (request_.at("type").AsString() == "Bus") {
-                PerformBusQuery(request, response);
+                PerformBusQuery(request);
             } else if (request_.at("type").AsString() == "Stop") {
-                PerformStopQuery(request, response);
+                PerformStopQuery(request);
             } else if (request_.at("type").AsString() == "Map") {
-                PerformMapQuery(response);
+                PerformMapQuery();
             }
-            output_json_root_.AsArray().push_back(json::Node(std::move(response)));
+            output_json_builder_.EndDict();
         }
+        output_json_builder_.EndArray();
     }
 
-    void JsonData::PerformMapQuery(json::Dict &response) {
+    void JsonData::PerformMapQuery() {
         std::ostringstream map_rendered;
         map_render_->SetStops(transport_catalogue_->GetStops());
         map_render_->SetRoutes(transport_catalogue_->GetRoutes());
         //
         map_render_->Render(map_rendered);
         //
-        response["map"] = json::Node(map_rendered.str());
+        output_json_builder_.Key("map").Value(json::Node(map_rendered.str()));
     }
 
-    void JsonData::PerformBusQuery(json::Node &request, json::Dict &response) {
+    void JsonData::PerformBusQuery(json::Node &request) {
         using namespace std::literals;
-        auto route = transport_catalogue_->GetRouteInfo(request.AsMap().at("name").AsString());
+        auto route = transport_catalogue_->GetRouteInfo(request.AsDict().at("name").AsString());
 
         if (route != nullptr) {
-            response["curvature"] = json::Node(route->curvature);
-            response["route_length"] = json::Node(route->route_length_meters);
-            response["stop_count"] = json::Node(int(route->stops_on_route));
-            response["unique_stop_count"] = json::Node(int(route->unique_stops));
-
+            output_json_builder_.Key("curvature").Value(json::Node(route->curvature))
+                    .Key("route_length").Value(json::Node(route->route_length_meters))
+                    .Key("stop_count").Value(json::Node(int(route->stops_on_route)))
+                    .Key("unique_stop_count").Value(json::Node(int(route->unique_stops)));
         } else {
-            response["error_message"] = json::Node("not found"s);
+            output_json_builder_.Key("error_message").Value(json::Node("not found"s));
         }
     }
 
-    void JsonData::PerformStopQuery(json::Node &request, json::Dict &response) {
+    void JsonData::PerformStopQuery(json::Node &request) {
         using namespace std::literals;
         std::optional<std::set<std::string_view>> buses_for_stop = transport_catalogue_->GetBusesForStopInfo(
-                request.AsMap().at("name").AsString());
+                request.AsDict().at("name").AsString());
 
         if (buses_for_stop == std::nullopt) {
-            response["error_message"s] = json::Node("not found"s);
+            output_json_builder_.Key("error_message").Value(json::Node("not found"s));
         } else if (buses_for_stop->empty()) {
-            response["buses"s] = json::Node(json::Array{});
+            output_json_builder_.Key("buses"s).Value(json::Node(json::Array{}));
         } else {
-            json::Array buses;
+            output_json_builder_.Key("buses"s).StartArray();
             //
             for (auto bus: *buses_for_stop) {
-                buses.push_back(std::string(bus));
+                output_json_builder_.Value(std::string(bus));
             }
-            response["buses"] = json::Node(std::move(buses));
+            output_json_builder_.EndArray();
         }
     }
 } // namespace txt_reader

@@ -17,7 +17,9 @@ namespace json {
             bool, int, double, std::string> {
     public:
         using variant::variant;
+        using Value = variant;
 
+        Node(Value value) : Value(value) {}
 
         bool IsInt() const;
 
@@ -33,7 +35,7 @@ namespace json {
 
         bool IsArray() const;
 
-        bool IsMap() const;
+        bool IsDict() const;
 
         int &AsInt();
 
@@ -45,10 +47,12 @@ namespace json {
 
         Array &AsArray();
 
-        Dict &AsMap();
+        Dict &AsDict();
 
         const std::variant<std::nullptr_t, std::vector<Node>, std::map<std::string, Node>,
                 bool, int, double, std::string> &GetValue() const;
+
+        Value &GetValue();
     };
 
     class Document {
