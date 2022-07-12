@@ -92,7 +92,8 @@ namespace json {
 
     template<typename Value>
     void PrintValue(const Value &value, std::ostream &out) {
-        out << std::boolalpha << std::fixed << std::setprecision(6) << value;
+        //out << std::boolalpha << std::fixed << std::setprecision(6) << value;
+        out << std::boolalpha << std::fixed << std::setprecision(5) << value;
     }
 
     // Перегрузка функции PrintValue для вывода значений null

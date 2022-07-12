@@ -140,7 +140,7 @@ namespace svg {
             object->Render(ctx);
         }
 
-        out << "</svg>"sv << std::endl;
+        out << "</svg>"sv; //<< std::endl;
     }
 
     void Document::AddPtr(std::unique_ptr<Object> &&obj) {
