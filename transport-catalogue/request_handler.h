@@ -2,7 +2,7 @@
 
 #include "transport_catalogue.h"
 #include "map_renderer.h"
-#include "route_manager.h"
+#include "transport_router.h"
 
 #include <iostream>
 #include <fstream>
@@ -109,7 +109,7 @@ namespace request_handler {
         QueryHandler()
                 : transport_catalogue_(std::make_shared<TransportCatalogue>()),
                   map_render_(std::make_shared<map_renderer::MapRender>()),
-                  route_manager_(std::make_shared<route_manager::RouteManager>()) {};
+                  route_manager_(std::make_shared<transport_router::RouteManager>()) {};
 
         virtual ~QueryHandler() = default;
 
@@ -134,7 +134,7 @@ namespace request_handler {
     protected:
         std::shared_ptr<TransportCatalogue> transport_catalogue_;
         std::shared_ptr<map_renderer::MapRender> map_render_;
-        std::shared_ptr<route_manager::RouteManager> route_manager_;
+        std::shared_ptr<transport_router::RouteManager> route_manager_;
     };
 
     template<typename T>

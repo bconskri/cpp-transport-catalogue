@@ -133,9 +133,13 @@ namespace json_reader {
         auto root = json::Load(input->GetStream()).GetRoot();
         //
         ParsePerformUploadQueries(root.AsDict().at("base_requests").AsArray());
-        ParseRenderSettings(root.AsDict().at("render_settings").AsDict());
+        if (root.AsDict().count("render_settings")) {
+            ParseRenderSettings(root.AsDict().at("render_settings").AsDict());
+        }
         //sprint12 add routing
-        ParseRoutingSettings(root.AsDict().at("routing_settings").AsDict());
+        if (root.AsDict().count("routing_settings")) {
+            ParseRoutingSettings(root.AsDict().at("routing_settings").AsDict());
+        }
         //
         ParsePerformStatQueries(root.AsDict().at("stat_requests").AsArray());
         //выводим Node json

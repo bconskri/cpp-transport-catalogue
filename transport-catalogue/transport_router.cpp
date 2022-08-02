@@ -1,7 +1,7 @@
-#include "route_manager.h"
+#include "transport_router.h"
 
-namespace route_manager {
-    void route_manager::RouteManager::SetSettings(const RoutingSettings &settings) {
+namespace transport_router {
+    void transport_router::RouteManager::SetSettings(const RoutingSettings &settings) {
         settings_ = settings;
     }
 
@@ -15,6 +15,10 @@ namespace route_manager {
             BuildBusRoutesGraph(transport_catalogue);
             //создадим на нем роутер
             router_ = std::make_unique<Router>(Router(graph_.value()));
+        }
+        //в графе нет ни одного ребра - маршруты строить просто не на чем
+        if (graph_->GetEdgeCount() == 0) {
+            return std::nullopt;
         }
         //
         auto route_build = router_->BuildRoute(stop_to_vertex_[from], stop_to_vertex_[to]);
@@ -31,19 +35,14 @@ namespace route_manager {
     void RouteManager::BuildBusRoutesGraph(std::shared_ptr<TransportCatalogue> transport_catalogue) {
         using namespace std::literals;
         //создаем пустой граф с количеством вертексов = кол-ву остановок *2
-        // в месте посадки добавляется ожидание
+        // так как на остановке в месте посадки добавляется ожидание
         graph_ = graph::DirectedWeightedGraph<double>(2.0 * transport_catalogue->GetStopsCount());
         //переберем все маршруты, заполним Vertexes
         for (const auto &route: transport_catalogue->GetRoutes()) {
             for (const auto &bus_stop: route.second->stops) {
-                //если маршрут линейный, он хранится достроенным в обратную сторону
-                // надо останавливаться на последней остановке
-
                 //добавляем вершину
                 if (stop_to_vertex_.count(bus_stop) == 0) {
-                    //vertex_to_stop_[stop_to_vertex_.size()] = bus_stop;
                     stop_to_vertex_[bus_stop] = stop_to_vertex_.size();
-
                 }
                 //добавляем спутник - ожидание, вдруг здесь будет куда пересаживаться
                 if (stop_to_vertex_.count(bus_stop + "_wait"s) == 0) {
@@ -52,11 +51,8 @@ namespace route_manager {
                     auto edge_id = graph_->AddEdge(Edge{stop_to_vertex_[bus_stop],
                                                         stop_to_vertex_[bus_stop + "_wait"s],
                                                         settings_.bus_wait_time});
-                    edge_to_route_segment_[edge_id] = RouteEdgeInfo{.bus = ""s,
-                            .type = RouteSegmentType::Wait,
-                            .span_count = 0,
-                            .stop_name = bus_stop,
-                            .time = settings_.bus_wait_time};
+                    edge_to_route_segment_[edge_id] = RouteEdgeInfo{bus_stop, ""s, 0, settings_.bus_wait_time,
+                                                                    RouteSegmentType::Wait};
                 }
             }
             //все вертексы остановок и ожидания для данного маршрута добавлены
@@ -67,33 +63,33 @@ namespace route_manager {
                 if (!route.second->is_roundtrip && *it_start == route.second->end_stop) {
                     break;
                 }
-                double time_to_drive = 0;
+                double time_to_drive_forward = 0;
+                double time_to_drive_reverse = 0;
                 int span_count = 0;
                 std::string prev_stop = *it_start;
                 for (auto it_end = std::next(it_start); it_end != route.second->stops.end(); it_end++) {
-                    time_to_drive += transport_catalogue->GetDistance(prev_stop, *it_end)
-                                     / settings_.bus_velocity;
-                    //
+                    time_to_drive_forward += transport_catalogue->GetDistance(prev_stop, *it_end)
+                                             / settings_.bus_velocity;
+                    time_to_drive_reverse += transport_catalogue->GetDistance(*it_end, prev_stop)
+                                             / settings_.bus_velocity;
+                    //не будем закольцовывать маршрут - т.е выходить и снова садиться на него
+//                    if (route.second->is_roundtrip && *it_start == *it_end) {
+//                        continue;
+//                    }
                     auto edge_id = graph_->AddEdge(
-                            Edge{stop_to_vertex_[*it_start + "_wait"s], stop_to_vertex_[*it_end], time_to_drive});
-                    edge_to_route_segment_[edge_id] = RouteEdgeInfo{
-                            .bus = std::string(route.first),
-                            .type = RouteSegmentType::Bus,
-                            .span_count = ++span_count,
-                            .stop_name = *it_start,
-                            .time = time_to_drive};
+                            Edge{stop_to_vertex_[*it_start + "_wait"s], stop_to_vertex_[*it_end], time_to_drive_forward});
+                    edge_to_route_segment_[edge_id] = RouteEdgeInfo{*it_start, std::string(route.first),
+                                                                    ++span_count, time_to_drive_forward,
+                                                                    RouteSegmentType::Bus};
                     //если маршрут некольцевой
                     // сразу добавим обратное ребро, так как у нас аккумулировано расстояние
                     // и не надо будет его считать второй раз
                     if (!route.second->is_roundtrip) {
                         edge_id = graph_->AddEdge(Edge{stop_to_vertex_[*it_end + "_wait"s], stop_to_vertex_[*it_start],
-                                                       time_to_drive});
-                        edge_to_route_segment_[edge_id] = RouteEdgeInfo{
-                                .bus = std::string(route.first),
-                                .type = RouteSegmentType::Bus,
-                                .span_count = span_count,
-                                .stop_name = *it_end,
-                                .time = time_to_drive};
+                                                       time_to_drive_reverse});
+                        edge_to_route_segment_[edge_id] = RouteEdgeInfo{*it_end, std::string(route.first),
+                                                                        span_count, time_to_drive_reverse,
+                                                                        RouteSegmentType::Bus};
                     }
                     //
                     prev_stop = *it_end;

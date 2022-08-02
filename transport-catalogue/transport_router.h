@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 struct RoutingSettings {
     double bus_wait_time;
@@ -18,14 +19,15 @@ enum RouteSegmentType {
     Bus,
 };
 struct RouteEdgeInfo {
+    std::string stop_name;
     std::string bus;
-    RouteSegmentType type;
     int span_count;
     double time;
-    std::string stop_name;
+    RouteSegmentType type;
+
 };
 
-namespace route_manager {
+namespace transport_router {
 
     class RouteManager {
     public:
@@ -43,8 +45,6 @@ namespace route_manager {
         RoutingSettings settings_;
         //VertexId надо где-то хранить, так как библиотека Graph работает только с ребрами
         std::unordered_map<std::string, graph::VertexId> stop_to_vertex_;
-        //при этом нам нужно обратное преобразование - ид -> имя остановки
-        //std::unordered_map<graph::VertexId, std::string> vertex_to_stop_;
         //маршрутизатор возвращает нам номера ребер графа - по которым проложен маршрут
         //нужно уметь восстановить по номеру ребра все данные для вывода в отчет
         std::unordered_map<graph::EdgeId, RouteEdgeInfo> edge_to_route_segment_;
