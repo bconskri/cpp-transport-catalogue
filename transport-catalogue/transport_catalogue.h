@@ -28,13 +28,17 @@ public:
     [[nodiscard]] std::optional<std::set<std::string_view>> GetBusesForStopInfo(const std::string_view stop_name) const;
 
     [[nodiscard]] double GetDistance(const BusStop *stop_from, const BusStop *stop_to);
+    [[nodiscard]] double GetDistance(const std::string_view stop_from, const std::string_view stop_to);
 
     [[nodiscard]] const std::unordered_map<std::string_view, BusRoute *>& GetRoutes() const;
     [[nodiscard]] const std::unordered_map<std::string_view, BusStop *>& GetStops() const;
 
+    size_t GetRoutesCount() const;
+    size_t GetStopsCount() const;
+
 private:
-    std::deque<BusStop> stops_;                                                //all stops data
+    std::deque<BusStop> stops_;                                          //all stops data
     std::unordered_map<std::string_view, BusStop *> stopname_to_stop_;   //hash-table for search stop by name
     std::deque<BusRoute> buses_;
-    std::unordered_map<std::string_view, BusRoute *> busname_to_bus_;          //hash-table for search bus by name
+    std::unordered_map<std::string_view, BusRoute *> busname_to_bus_;    //hash-table for search bus by name
 };

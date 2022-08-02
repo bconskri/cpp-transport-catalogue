@@ -3,6 +3,7 @@
 #include "request_handler.h"
 #include "transport_catalogue.h"
 #include "json_builder.h"
+#include "route_manager.h"
 
 namespace json_reader {
     //realize StreamData query performerser
@@ -22,7 +23,7 @@ namespace json_reader {
         std::istream &GetStream();
 
     private:
-        json::Builder& output_json_builder_;
+        json::Builder &output_json_builder_;
 
         //write data from stream into catalogue
         void ParseStop(json::Node &request);
@@ -38,6 +39,10 @@ namespace json_reader {
         void PerformStopQuery(json::Node &request);
 
         void ParseRenderSettings(json::Dict &render_settings);
+
+        void ParseRoutingSettings(json::Dict &routing_settings);
+
+        void PerformRouteQuery(json::Node &request);
 
         void PerformMapQuery();
     };

@@ -102,7 +102,8 @@ TransportCatalogue::GetBusesForStopInfo(const std::string_view stop_name) const 
         return std::nullopt;
     }
     for (const auto &bus: busname_to_bus_) {
-        auto tmp = std::find(bus.second->stops.begin(), bus.second->stops.end(),stop_name);if (tmp != bus.second->stops.end()) {
+        auto tmp = std::find(bus.second->stops.begin(), bus.second->stops.end(), stop_name);
+        if (tmp != bus.second->stops.end()) {
             found_buses.insert(bus.second->name);
         }
     }
@@ -122,10 +123,22 @@ double TransportCatalogue::GetDistance(const BusStop *stop_from, const BusStop *
     }
 }
 
-const std::unordered_map<std::string_view, BusRoute *>& TransportCatalogue::GetRoutes() const {
+double TransportCatalogue::GetDistance(const std::string_view stop_from, const std::string_view stop_to) {
+    return GetDistance(GetStopByName(stop_from),GetStopByName(stop_to));
+}
+
+const std::unordered_map<std::string_view, BusRoute *> &TransportCatalogue::GetRoutes() const {
     return busname_to_bus_;
 }
 
-const std::unordered_map<std::string_view, BusStop *>& TransportCatalogue::GetStops() const {
+const std::unordered_map<std::string_view, BusStop *> &TransportCatalogue::GetStops() const {
     return stopname_to_stop_;
+}
+
+size_t TransportCatalogue::GetRoutesCount() const {
+    return busname_to_bus_.size();
+}
+
+size_t TransportCatalogue::GetStopsCount() const {
+    return stopname_to_stop_.size();
 }

@@ -6,6 +6,8 @@
 
 #include <sstream>
 
+using namespace std::literals;
+
 namespace json_reader {
     void JsonData::ParseStop(json::Node &request) {
         BusStop stop;
@@ -101,6 +103,17 @@ namespace json_reader {
         map_render_->SetSettings(settings);
     }
 
+    void JsonData::ParseRoutingSettings(json::Dict &routing_settings) {
+        using namespace std::literals;
+        RoutingSettings settings;
+        const double KPH_TO_MPM = 1000.0 / 60.0;
+
+        settings.bus_wait_time = routing_settings.at("bus_wait_time"s).AsDouble();
+        settings.bus_velocity = routing_settings.at("bus_velocity"s).AsDouble() * KPH_TO_MPM;
+
+        route_manager_->SetSettings(settings);
+    }
+
     void JsonData::PerfomUploadQueries(request_handler::Inputer *input) {
         auto root = json::Load(input->GetStream()).GetRoot();
         ParsePerformUploadQueries(root.AsDict().at("base_requests").AsArray());
@@ -121,6 +134,8 @@ namespace json_reader {
         //
         ParsePerformUploadQueries(root.AsDict().at("base_requests").AsArray());
         ParseRenderSettings(root.AsDict().at("render_settings").AsDict());
+        //sprint12 add routing
+        ParseRoutingSettings(root.AsDict().at("routing_settings").AsDict());
         //
         ParsePerformStatQueries(root.AsDict().at("stat_requests").AsArray());
         //выводим Node json
@@ -142,10 +157,42 @@ namespace json_reader {
                 PerformStopQuery(request);
             } else if (request_.at("type").AsString() == "Map") {
                 PerformMapQuery();
+                //Спринт 12. В список stat_requests добавляются элементы с "type": "Route" —
+                // это запросы на построение маршрута между двумя остановками
+            } else if (request_.at("type").AsString() == "Route") {
+                PerformRouteQuery(request);
             }
             output_json_builder_.EndDict();
         }
         output_json_builder_.EndArray();
+    }
+
+    void JsonData::PerformRouteQuery(json::Node &request) {
+        auto route_build = route_manager_->BuildRoute(transport_catalogue_,
+                                                      request.AsDict().at("from"s).AsString(),
+                                                      request.AsDict().at("to"s).AsString());
+        //
+        if (route_build) {
+            output_json_builder_.Key("total_time"s).Value(route_build.value().first);
+            output_json_builder_.Key("items"s).StartArray();
+            for (const auto &item: route_build.value().second) {
+                output_json_builder_.StartDict();
+                if (item.type == RouteSegmentType::Wait) {
+                    output_json_builder_.Key("stop_name"s).Value(item.stop_name);
+                    output_json_builder_.Key("time"s).Value(item.time);
+                    output_json_builder_.Key("type"s).Value("Wait"s);
+                } else {
+                    output_json_builder_.Key("bus"s).Value(item.bus);
+                    output_json_builder_.Key("span_count"s).Value(item.span_count);
+                    output_json_builder_.Key("time"s).Value(item.time);
+                    output_json_builder_.Key("type"s).Value("Bus"s);
+                }
+                output_json_builder_.EndDict();
+            }
+            output_json_builder_.EndArray();
+        } else {
+            output_json_builder_.Key("error_message"s).Value("not found"s);
+        }
     }
 
     void JsonData::PerformMapQuery() {
