@@ -59,3 +59,16 @@
 2417	2598	1659472585033866661	TransportCatalogue	e9429ef8441d3f20
 24	2717	1659472831875927591	CMakeFiles/TransportCatalogue.dir/transport-catalogue/transport_router.cpp.o	52983d9476e1c56c
 2717	2876	1659472832035859503	TransportCatalogue	e9429ef8441d3f20
+18	7403	1659475657387610622	CMakeFiles/TransportCatalogue.dir/main.cpp.o	d5cd0280d2edca39
+21	7831	1659475657818504181	CMakeFiles/TransportCatalogue.dir/transport-catalogue/transport_catalogue.cpp.o	43d94101062f55b
+19	8428	1659475658421529916	CMakeFiles/TransportCatalogue.dir/transport-catalogue/txt_reader.cpp.o	9150dd39e2f0bc58
+7403	12622	1659475662624426825	CMakeFiles/TransportCatalogue.dir/transport-catalogue/json_reader.cpp.o	9f8b5998fe0cc02f
+7832	12979	1659475662979513458	CMakeFiles/TransportCatalogue.dir/transport-catalogue/request_handler.cpp.o	60f868f1c9383a80
+6	5387	1659475700417826462	CMakeFiles/TransportCatalogue.dir/transport-catalogue/domain.cpp.o	80faa9a941390216
+4	10341	1659475705311764758	CMakeFiles/TransportCatalogue.dir/transport-catalogue/map_renderer.cpp.o	c58e21081a877ed9
+4	3850	1659475828888118574	CMakeFiles/TransportCatalogue.dir/transport-catalogue/transport_router.cpp.o	52983d9476e1c56c
+3850	4072	1659475829093707197	TransportCatalogue	e9429ef8441d3f20
+5	2457	1659476008244769782	CMakeFiles/TransportCatalogue.dir/transport-catalogue/transport_router.cpp.o	52983d9476e1c56c
+2458	2642	1659476008420269761	TransportCatalogue	e9429ef8441d3f20
+4	2479	1659476016006468769	CMakeFiles/TransportCatalogue.dir/transport-catalogue/transport_router.cpp.o	52983d9476e1c56c
+2479	2617	1659476016127675628	TransportCatalogue	e9429ef8441d3f20

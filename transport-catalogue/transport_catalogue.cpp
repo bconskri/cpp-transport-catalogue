@@ -15,7 +15,7 @@ void TransportCatalogue::AddRoute(BusRoute &&route) {
     if (busname_to_bus_.count(route.name) == 0) {
         auto &ref = buses_.emplace_back(std::move(route));
         //для некольцевого маршрута запомним последнюю остановку
-        ref.end_stop = ref.stops.back();
+        ref.end_stop = ref.stops.size()-1; //ref.stops.back();
         //
         busname_to_bus_.insert({std::string_view(ref.name), &ref});
 

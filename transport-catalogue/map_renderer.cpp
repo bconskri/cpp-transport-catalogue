@@ -61,8 +61,10 @@ namespace map_renderer {
         //
         for (const auto &route: routes_) {
             std::vector<std::string_view> stops_for_labeling{route->stops.front()};
-            if (!route->is_roundtrip && route->stops.front() != route->end_stop) {
-                stops_for_labeling.emplace_back(route->end_stop);
+            //if (!route->is_roundtrip && route->stops.front() != route->end_stop) {
+            if (!route->is_roundtrip && route->stops.front() != route->stops[route->end_stop]) {
+                //stops_for_labeling.emplace_back(route->end_stop);
+                stops_for_labeling.emplace_back(route->stops[route->end_stop]);
             }
             for (const auto &stop: stops_for_labeling) {
                 underlying.SetPosition(projector(stops_.at(stop)->coordinates))
