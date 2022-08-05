@@ -87,10 +87,7 @@ namespace transport_router {
                                              / settings_.bus_velocity;
                     time_to_drive_reverse += transport_catalogue->GetDistance(*it_end, prev_stop)
                                              / settings_.bus_velocity;
-//                    //не будем закольцовывать маршрут - т.е выходить и снова садиться на него
-//                    if (route.second->is_roundtrip && *it_start == *it_end) {
-//                        continue;
-//                    }
+                    //
                     auto edge_id = graph_->AddEdge(Edge{stop_to_vertex_.at(*it_start + "_wait"s),
                                                         stop_to_vertex_.at(*it_end),
                                                         time_to_drive_forward});
