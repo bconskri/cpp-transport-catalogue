@@ -73,7 +73,6 @@ namespace transport_router {
             for (auto it_start = route.second->stops.begin(); it_start != route.second->stops.end(); ++it_start) {
                 //если это не круговой маршрут - он хранится достроенным в обратную сторону
                 //нам сейчас надо останавливаться на конечной
-                //if (!route.second->is_roundtrip && *it_start == route.second->end_stop) {
                 if (!route.second->is_roundtrip &&
                     std::distance(it_start, route.second->stops.begin()) == long(route.second->end_stop)) {
                     break;
@@ -109,7 +108,6 @@ namespace transport_router {
                     prev_stop = *it_end;
                     //если это не круговой маршрут - он хранится достроенным в обратную сторону
                     //нам сейчас надо останавливаться на конечной. До нее дошли
-                    //if (!route.second->is_roundtrip && *it_end == route.second->end_stop) {
                     if (!route.second->is_roundtrip &&
                         std::distance(it_end, route.second->stops.begin()) == long(route.second->end_stop)) {
                         break;
