@@ -1,3 +1,0 @@
-/Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/cmake-build-debug/CMakeFiles/TransportCatalogue.dir
-/Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/rodionkargapolov/CLionProjects/Yandex-praktikum/TransportCatalogue/cmake-build-debug/CMakeFiles/rebuild_cache.dir
