@@ -32,7 +32,6 @@ struct BusStop {
 struct BusRoute {
 
     std::string name;
-    //std::vector<const BusStop *> stops;
     std::vector<std::string> stops;
     std::unordered_set<std::string> unique_stops;
     //последняя остановка для некольцевого маршрута
