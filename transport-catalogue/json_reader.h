@@ -4,6 +4,7 @@
 #include "transport_catalogue.h"
 #include "json_builder.h"
 #include "transport_router.h"
+#include "serialization.h"
 
 namespace json_reader {
     //realize StreamData query performerser
@@ -45,6 +46,8 @@ namespace json_reader {
         void PerformRouteQuery(json::Node &request);
 
         void PerformMapQuery();
+
+        void PerformSerializerSettings(json::Dict &serializer_settings);
     };
 
     template<typename T>

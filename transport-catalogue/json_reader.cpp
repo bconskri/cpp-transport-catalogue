@@ -3,6 +3,7 @@
 #include "request_handler.h"
 #include "transport_catalogue.h"
 #include "domain.h"
+#include "serialization.h"
 
 #include <sstream>
 
@@ -20,6 +21,9 @@ namespace json_reader {
         for (auto &pair: stop_json.at("road_distances").AsDict()) {
             stop.distance_to_other_stops[pair.first] = pair.second.AsInt();
         }
+        if (serializer_->FileDefined()) {
+            serializer_->Serialize(stop);
+        }
         transport_catalogue_->AddStop(std::move(stop));
     }
 
@@ -34,7 +38,9 @@ namespace json_reader {
             route.stops.push_back(stop.AsString());
             route.unique_stops.insert(stop.AsString());
         }
-
+        if (serializer_->FileDefined()) {
+            serializer_->Serialize(route);
+        }
         transport_catalogue_->AddRoute(std::move(route));
     }
 
@@ -114,14 +120,41 @@ namespace json_reader {
         route_manager_->SetSettings(settings);
     }
 
+    void JsonData::PerformSerializerSettings(json::Dict &serializer_settings) {
+        SerializerSettings settings;
+        settings.file = serializer_settings.at("serialization_settings"s).AsString();
+
+        serializer_->SetSettings(settings);
+    }
+
     void JsonData::PerfomUploadQueries(request_handler::Inputer *input) {
         auto root = json::Load(input->GetStream()).GetRoot();
+        if (root.AsDict().count("render_settings")) {
+            ParseRenderSettings(root.AsDict().at("render_settings").AsDict());
+        }
+        //sprint12 add routing
+        if (root.AsDict().count("routing_settings")) {
+            ParseRoutingSettings(root.AsDict().at("routing_settings").AsDict());
+        }
+        //sprint 14 new query - serialization_settings
+        if (root.AsDict().count("serialization_settings")) {
+            PerformSerializerSettings(root.AsDict().at("serialization_settings").AsDict());
+        }
         ParsePerformUploadQueries(root.AsDict().at("base_requests").AsArray());
+        //sprint 14 we must serialize output to file
+        if (serializer_->FileDefined()) {
+            serializer_->FlushToFile();
+        }
     }
 
     void JsonData::PerfomStatQueries(request_handler::Inputer *input,
                                      [[maybe_unused]] request_handler::Logger *output) {
         auto root = json::Load(input->GetStream()).GetRoot();
+        //
+        //sprint 14 new query - serialization_settings
+        if (root.AsDict().count("serialization_settings")) {
+            PerformSerializerSettings(root.AsDict().at("serialization_settings").AsDict());
+        }
         //
         ParsePerformStatQueries(root.AsDict().at("stat_requests").AsArray());
         //выводим Node json

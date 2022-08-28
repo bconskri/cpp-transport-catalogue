@@ -3,6 +3,7 @@
 #include "transport_catalogue.h"
 #include "map_renderer.h"
 #include "transport_router.h"
+#include "serialization.h"
 
 #include <iostream>
 #include <fstream>
@@ -135,6 +136,7 @@ namespace request_handler {
         std::shared_ptr<TransportCatalogue> transport_catalogue_;
         std::shared_ptr<map_renderer::MapRender> map_render_;
         std::shared_ptr<transport_router::RouteManager> route_manager_;
+        std::shared_ptr<serialization::Serializer> serializer_;
     };
 
     template<typename T>
