@@ -22,7 +22,6 @@
  */
 
 struct BusStop {
-
     std::string name;
     geo::Coordinates coordinates{0L, 0L};
     std::set<std::string> buses;

@@ -2,6 +2,8 @@
 
 #include "transport_catalogue.pb.h"
 #include "domain.h"
+#include "transport_catalogue.h"
+
 #include <string>
 #include <fstream>
 
@@ -11,6 +13,7 @@ struct SerializerSettings {
 
 namespace serialization {
     class Serializer {
+    private:
         SerializerSettings settings_;
         transport_catalogue::TransportPackage transport_package_;
 
@@ -20,5 +23,6 @@ namespace serialization {
         void Serialize(const BusRoute& route);
         void Serialize(const BusStop& stop);
         void FlushToFile();
+        void Deserialize(std::shared_ptr<TransportCatalogue> transport_catalogue);
     };
 } //namespace serialization

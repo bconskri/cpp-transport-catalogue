@@ -110,7 +110,8 @@ namespace request_handler {
         QueryHandler()
                 : transport_catalogue_(std::make_shared<TransportCatalogue>()),
                   map_render_(std::make_shared<map_renderer::MapRender>()),
-                  route_manager_(std::make_shared<transport_router::RouteManager>()) {};
+                  route_manager_(std::make_shared<transport_router::RouteManager>()),
+                  serializer_(std::make_shared<serialization::Serializer>()) {};
 
         virtual ~QueryHandler() = default;
 

@@ -55,6 +55,7 @@ namespace json_reader {
         }
         //recalc route stats after all data added
         transport_catalogue_->CalcRoutesStat();
+        //std::cout << "ParsePerformUploadQueries Complete" << std::endl;
     }
 
     svg::Color NodeAsColor(json::Node &node) {
@@ -122,7 +123,7 @@ namespace json_reader {
 
     void JsonData::PerformSerializerSettings(json::Dict &serializer_settings) {
         SerializerSettings settings;
-        settings.file = serializer_settings.at("serialization_settings"s).AsString();
+        settings.file = serializer_settings.at("file"s).AsString();
 
         serializer_->SetSettings(settings);
     }
@@ -154,6 +155,10 @@ namespace json_reader {
         //sprint 14 new query - serialization_settings
         if (root.AsDict().count("serialization_settings")) {
             PerformSerializerSettings(root.AsDict().at("serialization_settings").AsDict());
+            //need to deserialize db and load catalogue and settings
+            if (serializer_->FileDefined()) {
+                serializer_->Deserialize(transport_catalogue_);
+            }
         }
         //
         ParsePerformStatQueries(root.AsDict().at("stat_requests").AsArray());

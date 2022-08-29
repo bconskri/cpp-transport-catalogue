@@ -9,7 +9,7 @@ message Rgb {
 };
 
 message Rgba {
-  Rgb rgb = 1;
+  Rgb rgb = 1
   double opacity = 2;
 };
 
@@ -58,7 +58,7 @@ message Distance_to_stop {
 message BusStop {
   string name = 1;
   Coordinates coordinates = 2;
-  repeated Distance_to_stop distance_to_other_stops = 3;
+  repeated Distance_to_stop distances = 3;
 };
 
 message BusRoute {
@@ -69,7 +69,7 @@ message BusRoute {
 
 message TransportCatalogue {
   repeated BusStop stops = 1;
-  repeated BusRoute route = 2;
+  repeated BusRoute routes = 2;
 }
 
 message TransportPackage {
