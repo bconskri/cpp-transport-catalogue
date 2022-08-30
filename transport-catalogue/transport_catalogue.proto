@@ -70,10 +70,55 @@ message BusRoute {
 message TransportCatalogue {
   repeated BusStop stops = 1;
   repeated BusRoute routes = 2;
+};
+
+message Edge {
+  uint32 from = 1;
+  uint32 to = 2;
+  double weight = 3;
+};
+
+message IncidenceList {
+  repeated uint32 edge_id = 1;
 }
+
+message Graph {
+  repeated Edge edges = 1;
+  repeated IncidenceList incidence_lists = 2;
+};
+
+message Router {
+
+};
+
+message StopToVertex{
+  string name = 1;
+  uint32 vertex_id = 2;
+};
+
+message RouteEdgeInfo {
+  string stop_name = 1;
+  string bus = 2;
+  uint32 span_count = 3;
+  double time = 4;
+  bool type = 5; //Wait = 0, Bus = 1
+};
+
+message EdgeToRouteSegment {
+  uint32 edge_id = 1;
+  RouteEdgeInfo route_edge_info = 2;
+};
+
+message Route_manager {
+  repeated StopToVertex stop_to_vertex = 1;
+  repeated EdgeToRouteSegment edge_to_route_segment = 2;
+  Graph graph = 3;
+  Router router = 4;
+};
 
 message TransportPackage {
   TransportCatalogue catalogue = 1;
   RenderSettings render_settings = 2;
   RoutingSettings routing_settings = 3;
-}
+  Route_manager route_manager = 4;
+};
