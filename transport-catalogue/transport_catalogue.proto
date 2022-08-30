@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package transport_catalogue;
+package transport_package;
 
 message Rgb {
   uint32 red = 1;
@@ -9,7 +9,7 @@ message Rgb {
 };
 
 message Rgba {
-  Rgb rgb = 1
+  Rgb rgb = 1;
   double opacity = 2;
 };
 

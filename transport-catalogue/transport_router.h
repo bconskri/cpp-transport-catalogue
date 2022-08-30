@@ -27,6 +27,11 @@ struct RouteEdgeInfo {
 
 };
 
+//forward declaration
+namespace serialization {
+    class Serializer;
+}
+
 namespace transport_router {
 
     class RouteManager {
@@ -42,6 +47,9 @@ namespace transport_router {
         BuildRoute(std::shared_ptr<TransportCatalogue>, std::string, std::string);
 
     private:
+        //we need it friend to access private fileds to serialize
+        friend class serialization::Serializer;
+        //
         RoutingSettings settings_;
         //VertexId надо где-то хранить, так как библиотека Graph работает только с ребрами
         std::unordered_map<std::string, graph::VertexId> stop_to_vertex_;

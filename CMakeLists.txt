@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.19)
 project(transport_catalogue)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -8,11 +8,6 @@ find_package(Threads REQUIRED)
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS transport-catalogue/transport_catalogue.proto)
 
-#add_subdirectory(Google_tests)
-
-#recent -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla
-#for sanitizer  -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls
-#for profiling -O0 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra -Wstrict-overflow -Werror=vla -fsanitize=address -g -O0 -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 
 set(TRANSPORT_CATALOGUE_FILES geo.h txt_reader.cpp txt_reader.h transport_catalogue.cpp transport_catalogue.h json.h json.cpp json_reader.cpp json_reader.h domain.h request_handler.cpp request_handler.h geo.cpp svg.h svg.cpp map_renderer.cpp map_renderer.h domain.cpp json_builder.h json_builder.cpp router.h graph.h ranges.h transport_router.cpp transport_router.h serialization.h serialization.cpp)

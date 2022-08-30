@@ -107,6 +107,10 @@ namespace json_reader {
             settings.color_palette.emplace_back(NodeAsColor(node));
         }
 
+        if (serializer_->FileDefined()) {
+            serializer_->Serialize(settings);
+        }
+
         map_render_->SetSettings(settings);
     }
 
@@ -117,6 +121,10 @@ namespace json_reader {
 
         settings.bus_wait_time = routing_settings.at("bus_wait_time"s).AsDouble();
         settings.bus_velocity = routing_settings.at("bus_velocity"s).AsDouble() * KPH_TO_MPM;
+
+        if (serializer_->FileDefined()) {
+            serializer_->Serialize(settings);
+        }
 
         route_manager_->SetSettings(settings);
     }
@@ -130,6 +138,11 @@ namespace json_reader {
 
     void JsonData::PerfomUploadQueries(request_handler::Inputer *input) {
         auto root = json::Load(input->GetStream()).GetRoot();
+        //sprint 14 new query - serialization_settings
+        if (root.AsDict().count("serialization_settings")) {
+            PerformSerializerSettings(root.AsDict().at("serialization_settings").AsDict());
+        }
+        //
         if (root.AsDict().count("render_settings")) {
             ParseRenderSettings(root.AsDict().at("render_settings").AsDict());
         }
@@ -137,13 +150,13 @@ namespace json_reader {
         if (root.AsDict().count("routing_settings")) {
             ParseRoutingSettings(root.AsDict().at("routing_settings").AsDict());
         }
-        //sprint 14 new query - serialization_settings
-        if (root.AsDict().count("serialization_settings")) {
-            PerformSerializerSettings(root.AsDict().at("serialization_settings").AsDict());
-        }
+        //
         ParsePerformUploadQueries(root.AsDict().at("base_requests").AsArray());
         //sprint 14 we must serialize output to file
         if (serializer_->FileDefined()) {
+            //sprint14 task 3/3 we need to build graph and route_manager and serialize them
+            serializer_->Serialize(transport_catalogue_, route_manager_);
+            //
             serializer_->FlushToFile();
         }
     }
@@ -157,7 +170,7 @@ namespace json_reader {
             PerformSerializerSettings(root.AsDict().at("serialization_settings").AsDict());
             //need to deserialize db and load catalogue and settings
             if (serializer_->FileDefined()) {
-                serializer_->Deserialize(transport_catalogue_);
+                serializer_->Deserialize(transport_catalogue_, route_manager_, map_render_);
             }
         }
         //
