@@ -29,7 +29,7 @@ namespace svg {
     void Circle::RenderObject(const RenderContext &context) const {
         auto &out = context.out;
         out << "<circle cx=\""sv << center_.x << "\" cy=\""sv << center_.y << "\" "sv;
-        out << "r=\""sv << radius_ << "\" "sv;
+        out << "r=\""sv << radius_ << "\""sv;
         // Выводим атрибуты, унаследованные от PathProps
         RenderAttrs(context.out);
         out << "/>"sv;
@@ -58,7 +58,7 @@ namespace svg {
         out << "\"";
         // Выводим атрибуты, унаследованные от PathProps
         RenderAttrs(context.out);
-        out << " />"sv;
+        out << "/>"sv;
     }
 
     // ---------- Text ------------------
@@ -106,20 +106,21 @@ namespace svg {
                 {'&',  "&amp;"}
         };
 
-        out << "<text "sv;
-        out << "x=\""sv << coords_.x << "\" y=\""sv << coords_.y << "\" "sv;
-        out << "dx=\""sv << offset_.x << "\" dy=\""sv << offset_.y << "\" "sv;
-        out << "font-size=\""sv << font_size_ << "\" "sv;
+        out << "<text"sv;
+        // Выводим атрибуты, унаследованные от PathProps
+        RenderAttrs(context.out);
+        //
+        out << " x=\""sv << coords_.x << "\" y=\""sv << coords_.y << "\""sv;
+        out << " dx=\""sv << offset_.x << "\" dy=\""sv << offset_.y << "\""sv;
+        out << " font-size=\""sv << font_size_ << "\""sv;
 
         if (font_family_) {
-            out << "font-family=\""sv << *font_family_ << "\" "sv;
+            out << " font-family=\""sv << *font_family_ << "\""sv;
         }
 
         if (font_weight_) {
-            out << "font-weight=\""sv << *font_weight_ << "\""sv;
+            out << " font-weight=\""sv << *font_weight_ << "\""sv;
         }
-        // Выводим атрибуты, унаследованные от PathProps
-        RenderAttrs(context.out);
         //
         out << ">";
         for (char x: text_) {

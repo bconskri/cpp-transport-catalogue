@@ -87,8 +87,23 @@ message Graph {
   repeated IncidenceList incidence_lists = 2;
 };
 
-message Router {
+message RouteInternalData {
+  bool nullopt = 1; //optional<RouteInternalData>
+  double weight = 2;
+  bool prev_edge_set = 3; //optional prev_edge
+  uint32 prev_edge = 4;
+};
 
+message RouteInternalData_vector {
+  repeated RouteInternalData route_internal_data_vector = 1;
+};
+
+message RoutesInternalData {
+  repeated RouteInternalData_vector routes_internal_data = 1;
+};
+
+message Router {
+  RoutesInternalData routes_internal_data = 1;
 };
 
 message StopToVertex{

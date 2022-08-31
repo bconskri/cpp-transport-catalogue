@@ -42,23 +42,7 @@ namespace map_renderer {
                                            std::set<const BusRoute *, LexSort<BusRoute>> &routes_) {
         using namespace std::literals;
         int index = 0;
-        svg::Text underlying, text;
-        underlying.SetOffset({settings_.bus_label_offset[0], settings_.bus_label_offset[1]})
-                .SetFontSize(settings_.bus_label_font_size)
-                .SetFontFamily("Verdana"s)
-                .SetFontWeight("bold"s)
 
-                .SetFillColor(settings_.underlayer_color)
-                .SetStrokeColor(settings_.underlayer_color)
-                .SetStrokeWidth(settings_.underlayer_width)
-                .SetStrokeLineCap(svg::StrokeLineCap::ROUND)
-                .SetStrokeLineJoin(svg::StrokeLineJoin::ROUND);
-        //
-        text.SetOffset({settings_.bus_label_offset[0], settings_.bus_label_offset[1]})
-                .SetFontSize(settings_.bus_label_font_size)
-                .SetFontFamily("Verdana"s)
-                .SetFontWeight("bold"s);
-        //
         for (const auto &route: routes_) {
             std::vector<std::string_view> stops_for_labeling{route->stops.front()};
             //if (!route->is_roundtrip && route->stops.front() != route->end_stop) {
@@ -67,15 +51,27 @@ namespace map_renderer {
                 stops_for_labeling.emplace_back(route->stops[route->end_stop]);
             }
             for (const auto &stop: stops_for_labeling) {
-                underlying.SetPosition(projector(stops_.at(stop)->coordinates))
+                svg::Text underlying, text;
+                underlying.SetFillColor(settings_.underlayer_color)
+                        .SetStrokeColor(settings_.underlayer_color)
+                        .SetStrokeWidth(settings_.underlayer_width)
+                        .SetStrokeLineCap(svg::StrokeLineCap::ROUND)
+                        .SetStrokeLineJoin(svg::StrokeLineJoin::ROUND)
+                        .SetPosition(projector(stops_.at(stop)->coordinates))
+                        .SetOffset({settings_.bus_label_offset[0], settings_.bus_label_offset[1]})
+                        .SetFontSize(settings_.bus_label_font_size)
+                        .SetFontFamily("Verdana"s)
+                        .SetFontWeight("bold"s)
                         .SetData(route->name);
-
                 doc_.Add(underlying);
                 //
-                text.SetPosition(projector(stops_.at(stop)->coordinates))
-                        .SetData(route->name)
-                        .SetFillColor(settings_.color_palette[index % settings_.color_palette.size()]);
-
+                text.SetFillColor(settings_.color_palette[index % settings_.color_palette.size()])
+                        .SetPosition(projector(stops_.at(stop)->coordinates))
+                        .SetOffset({settings_.bus_label_offset[0], settings_.bus_label_offset[1]})
+                        .SetFontSize(settings_.bus_label_font_size)
+                        .SetFontFamily("Verdana"s)
+                        .SetFontWeight("bold"s)
+                        .SetData(route->name);
                 doc_.Add(text);
             }
             index++;
@@ -101,29 +97,29 @@ namespace map_renderer {
     void MapRender::RenderStopsNamesLayer(const SphereProjector &projector,
                                           std::set<const BusStop *, LexSort<BusStop>> &stops_to_render) {
         using namespace std::literals;
-        svg::Text underlying, text;
-        underlying.SetOffset({settings_.stop_label_offset[0], settings_.stop_label_offset[1]})
-                .SetFontSize(settings_.stop_label_font_size)
-                .SetFontFamily("Verdana"s)
-
-                .SetFillColor(settings_.underlayer_color)
-                .SetStrokeColor(settings_.underlayer_color)
-                .SetStrokeWidth(settings_.underlayer_width)
-                .SetStrokeLineCap(svg::StrokeLineCap::ROUND)
-                .SetStrokeLineJoin(svg::StrokeLineJoin::ROUND);
-
-        text.SetOffset({settings_.stop_label_offset[0], settings_.stop_label_offset[1]})
-                .SetFontSize(settings_.stop_label_font_size)
-                .SetFontFamily("Verdana"s)
-                .SetFillColor("black");
 
         for (const auto &stop: stops_to_render) {
             //if (!stop.second->buses.empty()) {
-            underlying.SetPosition(projector(stop->coordinates))
+            svg::Text underlying, text;
+            underlying.SetFillColor(settings_.underlayer_color)
+                    .SetStrokeColor(settings_.underlayer_color)
+                    .SetStrokeWidth(settings_.underlayer_width)
+                    .SetStrokeLineCap(svg::StrokeLineCap::ROUND)
+                    .SetStrokeLineJoin(svg::StrokeLineJoin::ROUND)
+                    .SetPosition(projector(stop->coordinates))
+                    .SetOffset({settings_.stop_label_offset[0], settings_.stop_label_offset[1]})
+                    .SetFontSize(settings_.stop_label_font_size)
+                    .SetFontFamily("Verdana"s)
+                    //.SetFontWeight("bold"s)
                     .SetData(stop->name);
             doc_.Add(underlying);
             //
-            text.SetPosition(projector(stop->coordinates))
+            text.SetFillColor("black"s)
+                    .SetPosition(projector(stop->coordinates))
+                    .SetOffset({settings_.stop_label_offset[0], settings_.stop_label_offset[1]})
+                    .SetFontSize(settings_.stop_label_font_size)
+                    .SetFontFamily("Verdana"s)
+                    //.SetFontWeight("bold"s)
                     .SetData(stop->name);
             doc_.Add(text);
             //}
