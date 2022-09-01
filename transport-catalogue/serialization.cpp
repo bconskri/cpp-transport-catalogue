@@ -163,98 +163,98 @@ namespace serialization {
                     //Deserialize graph and router
                     //auto route_build = route_manager->BuildRoute(transport_catalogue, "", "");
                     //
-                    auto route_manager_pack = transport_package_.route_manager();
-                    //deSerialize stop_to_vertex
-                    {
-                        std::unordered_map<std::string, graph::VertexId> stop_to_vertex;
-                        for (int i = 0; i < route_manager_pack.stop_to_vertex_size(); ++i) {
-                            const auto stop_to_vertex_pack = route_manager_pack.stop_to_vertex(i);
-                            stop_to_vertex.emplace(stop_to_vertex_pack.name(), stop_to_vertex_pack.vertex_id());
-                        }
-                        route_manager->stop_to_vertex_.swap(stop_to_vertex);
-                    }
-                    //deSerialize edge_to_route_segment_
-                    {
-                        std::unordered_map<graph::EdgeId, RouteEdgeInfo> edge_to_route_segment;
-                        /* struct RouteEdgeInfo {
-                            std::string stop_name;
-                            std::string bus;
-                            int span_count;
-                            double time;
-                            RouteSegmentType type;
-                        */
-                        for (int i = 0; i < route_manager_pack.edge_to_route_segment_size(); ++i) {
-                            const auto edge_to_route_segment_pack = route_manager_pack.edge_to_route_segment(i);
-                            RouteEdgeInfo route_edge_info;
-                            route_edge_info.stop_name = edge_to_route_segment_pack.route_edge_info().stop_name();
-                            route_edge_info.bus = edge_to_route_segment_pack.route_edge_info().bus();
-                            route_edge_info.span_count = edge_to_route_segment_pack.route_edge_info().span_count();
-                            route_edge_info.time = edge_to_route_segment_pack.route_edge_info().time();
-                            route_edge_info.type = edge_to_route_segment_pack.route_edge_info().type() ?
-                                                   RouteSegmentType::Bus : RouteSegmentType::Wait;
-                            edge_to_route_segment.emplace(edge_to_route_segment_pack.edge_id(), route_edge_info);
-                        }
-                        route_manager->edge_to_route_segment_.swap(edge_to_route_segment);
-                    }
-                    //deSerialize graph_
-                    {
-                        std::vector<graph::Edge<double>> edges;
-                        /*struct Edge {
-                            VertexId from;
-                            VertexId to;
-                            Weight weight;
-                        */
-                        for (int i = 0; i < route_manager_pack.graph().edges_size(); ++i) {
-                            auto edge_pack = route_manager_pack.graph().edges(i);
-                            auto &add_edge = edges.emplace_back();
-                            add_edge.from = edge_pack.from();
-                            add_edge.to = edge_pack.to();
-                            add_edge.weight = edge_pack.weight();
-                        }
-                        std::vector<std::vector<graph::EdgeId>> incidence_lists;
-                        //using EdgeId = size_t;
-                        for (int i = 0; i < route_manager_pack.graph().incidence_lists_size(); ++i) {
-                            auto incidence_lists_pack = route_manager_pack.graph().incidence_lists(i);
-                            auto &incidence_lists_element = incidence_lists.emplace_back();
-                            for (int j = 0; j < incidence_lists_pack.edge_id_size(); ++j) {
-                                incidence_lists_element.push_back(incidence_lists_pack.edge_id(j));
+                    if (transport_catalogue->GetStopsCount() > 0) {
+                        auto route_manager_pack = transport_package_.route_manager();
+                        //deSerialize stop_to_vertex
+                        {
+                            std::unordered_map<std::string, graph::VertexId> stop_to_vertex;
+                            for (int i = 0; i < route_manager_pack.stop_to_vertex_size(); ++i) {
+                                const auto stop_to_vertex_pack = route_manager_pack.stop_to_vertex(i);
+                                stop_to_vertex.emplace(stop_to_vertex_pack.name(), stop_to_vertex_pack.vertex_id());
                             }
+                            route_manager->stop_to_vertex_.swap(stop_to_vertex);
                         }
-                        std::optional<graph::DirectedWeightedGraph<double>> graph =
-                                graph::DirectedWeightedGraph<double>(std::move(edges), std::move(incidence_lists));
-                        route_manager->graph_.swap(graph);
-                    }
-                    //deSerialize router_
-                    {
-//                        if (route_manager->graph_->GetEdgeCount() > 0) {
-//                            route_manager->router_ = std::make_unique<graph::Router<double>>(
-//                                    graph::Router<double>(route_manager->graph_.value()));
-//                        }
-                        auto router = std::make_unique<graph::Router<double>>(
-                                graph::Router<double>(route_manager->graph_.value(), 0));
-                        auto routes_internal_data = &router->routes_internal_data_;
-                        for (int i = 0;
-                             i < route_manager_pack.router().routes_internal_data().routes_internal_data_size();
-                             ++i) { //std::vector<
-                            auto routes_internal_data_pack =
-                                    route_manager_pack.router().routes_internal_data().routes_internal_data(i);
-                            auto routes_internal_data_element = &routes_internal_data->at(i); //routes_internal_data->emplace_back();
-                            for (int j = 0; j < routes_internal_data_pack.route_internal_data_vector_size(); ++j) {
-                                //std::vector<std::vector<
-                                auto element = &routes_internal_data_element->at(j); //routes_internal_data_element.emplace_back();
-                                auto route_internal_data_vector_element = routes_internal_data_pack.route_internal_data_vector(
-                                        j);
-                                if (route_internal_data_vector_element.nullopt() == 0) {
-                                    graph::Router<double>::RouteInternalData data_to_set;
-                                    data_to_set.weight = route_internal_data_vector_element.weight();
-                                    if (route_internal_data_vector_element.prev_edge_set()) {
-                                        data_to_set.prev_edge = route_internal_data_vector_element.prev_edge();
-                                    }
-                                    *element = data_to_set;
+                        //deSerialize edge_to_route_segment_
+                        {
+                            std::unordered_map<graph::EdgeId, RouteEdgeInfo> edge_to_route_segment;
+                            /* struct RouteEdgeInfo {
+                                std::string stop_name;
+                                std::string bus;
+                                int span_count;
+                                double time;
+                                RouteSegmentType type;
+                            */
+                            for (int i = 0; i < route_manager_pack.edge_to_route_segment_size(); ++i) {
+                                const auto edge_to_route_segment_pack = route_manager_pack.edge_to_route_segment(i);
+                                RouteEdgeInfo route_edge_info;
+                                route_edge_info.stop_name = edge_to_route_segment_pack.route_edge_info().stop_name();
+                                route_edge_info.bus = edge_to_route_segment_pack.route_edge_info().bus();
+                                route_edge_info.span_count = edge_to_route_segment_pack.route_edge_info().span_count();
+                                route_edge_info.time = edge_to_route_segment_pack.route_edge_info().time();
+                                route_edge_info.type = edge_to_route_segment_pack.route_edge_info().type() ?
+                                                       RouteSegmentType::Bus : RouteSegmentType::Wait;
+                                edge_to_route_segment.emplace(edge_to_route_segment_pack.edge_id(), route_edge_info);
+                            }
+                            route_manager->edge_to_route_segment_.swap(edge_to_route_segment);
+                        }
+                        //deSerialize graph_
+                        {
+                            std::vector<graph::Edge<double>> edges;
+                            /*struct Edge {
+                                VertexId from;
+                                VertexId to;
+                                Weight weight;
+                            */
+                            for (int i = 0; i < route_manager_pack.graph().edges_size(); ++i) {
+                                auto edge_pack = route_manager_pack.graph().edges(i);
+                                auto &add_edge = edges.emplace_back();
+                                add_edge.from = edge_pack.from();
+                                add_edge.to = edge_pack.to();
+                                add_edge.weight = edge_pack.weight();
+                            }
+                            std::vector<std::vector<graph::EdgeId>> incidence_lists;
+                            //using EdgeId = size_t;
+                            for (int i = 0; i < route_manager_pack.graph().incidence_lists_size(); ++i) {
+                                auto incidence_lists_pack = route_manager_pack.graph().incidence_lists(i);
+                                auto &incidence_lists_element = incidence_lists.emplace_back();
+                                for (int j = 0; j < incidence_lists_pack.edge_id_size(); ++j) {
+                                    incidence_lists_element.push_back(incidence_lists_pack.edge_id(j));
                                 }
                             }
+                            std::optional<graph::DirectedWeightedGraph<double>> graph =
+                                    graph::DirectedWeightedGraph<double>(std::move(edges), std::move(incidence_lists));
+                            route_manager->graph_.swap(graph);
                         }
-                        route_manager->router_.swap(router);
+                        //deSerialize router_
+                        {
+                            graph::Router<double>::RoutesInternalData routes_internal_data;
+                            for (int i = 0;
+                                 i < route_manager_pack.router().routes_internal_data().routes_internal_data_size();
+                                 ++i) { //std::vector<
+                                auto routes_internal_data_pack =
+                                        route_manager_pack.router().routes_internal_data().routes_internal_data(i);
+                                auto &routes_internal_data_element = routes_internal_data.emplace_back();
+                                for (int j = 0; j < routes_internal_data_pack.route_internal_data_vector_size(); ++j) {
+                                    //std::vector<std::vector<
+                                    auto &element = routes_internal_data_element.emplace_back();
+                                    auto route_internal_data_vector_element = routes_internal_data_pack.route_internal_data_vector(
+                                            j);
+                                    if (route_internal_data_vector_element.nullopt() == 0) {
+                                        graph::Router<double>::RouteInternalData data_to_set;
+                                        data_to_set.weight = route_internal_data_vector_element.weight();
+                                        if (route_internal_data_vector_element.prev_edge_set()) {
+                                            data_to_set.prev_edge = route_internal_data_vector_element.prev_edge();
+                                        }
+                                        element = data_to_set;
+                                    }
+                                }
+                            }
+                            //свопить приват поля приводит к плавающей ошибке в тренажере
+                            //сделал через конструктор
+                            route_manager->router_ = std::make_unique<graph::Router<double>>(
+                                    route_manager->graph_.value(),
+                                    std::move(routes_internal_data));
+                        }
                     }
                 }
             }

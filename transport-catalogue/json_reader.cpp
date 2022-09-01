@@ -155,7 +155,9 @@ namespace json_reader {
         //sprint 14 we must serialize output to file
         if (serializer_->FileDefined()) {
             //sprint14 task 3/3 we need to build graph and route_manager and serialize them
-            serializer_->Serialize(transport_catalogue_, route_manager_);
+            if (transport_catalogue_->GetStopsCount() > 0) {
+                serializer_->Serialize(transport_catalogue_, route_manager_);
+            }
             //
             serializer_->FlushToFile();
         }
