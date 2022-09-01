@@ -8,7 +8,7 @@
 
 namespace request_handler {
     QueryHandler *QueryHandler::GetHandler(const io_type datatype) {
-        QueryHandler *p;
+        QueryHandler *p = nullptr;
         switch (datatype) {
             case Txt:
                 p = new txt_reader::TxtData();

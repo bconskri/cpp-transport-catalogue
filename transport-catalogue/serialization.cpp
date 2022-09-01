@@ -161,6 +161,8 @@ namespace serialization {
                         map_render->SetSettings(rend_settings);
                     }
                     //Deserialize graph and router
+                    //auto route_build = route_manager->BuildRoute(transport_catalogue, "", "");
+                    //
                     auto route_manager_pack = transport_package_.route_manager();
                     //deSerialize stop_to_vertex
                     {
@@ -204,7 +206,7 @@ namespace serialization {
                         */
                         for (int i = 0; i < route_manager_pack.graph().edges_size(); ++i) {
                             auto edge_pack = route_manager_pack.graph().edges(i);
-                            auto& add_edge = edges.emplace_back();
+                            auto &add_edge = edges.emplace_back();
                             add_edge.from = edge_pack.from();
                             add_edge.to = edge_pack.to();
                             add_edge.weight = edge_pack.weight();
@@ -213,7 +215,7 @@ namespace serialization {
                         //using EdgeId = size_t;
                         for (int i = 0; i < route_manager_pack.graph().incidence_lists_size(); ++i) {
                             auto incidence_lists_pack = route_manager_pack.graph().incidence_lists(i);
-                            auto& incidence_lists_element = incidence_lists.emplace_back();
+                            auto &incidence_lists_element = incidence_lists.emplace_back();
                             for (int j = 0; j < incidence_lists_pack.edge_id_size(); ++j) {
                                 incidence_lists_element.push_back(incidence_lists_pack.edge_id(j));
                             }
@@ -224,6 +226,10 @@ namespace serialization {
                     }
                     //deSerialize router_
                     {
+//                        if (route_manager->graph_->GetEdgeCount() > 0) {
+//                            route_manager->router_ = std::make_unique<graph::Router<double>>(
+//                                    graph::Router<double>(route_manager->graph_.value()));
+//                        }
                         auto router = std::make_unique<graph::Router<double>>(
                                 graph::Router<double>(route_manager->graph_.value(), 0));
                         auto routes_internal_data = &router->routes_internal_data_;
@@ -332,7 +338,7 @@ namespace serialization {
         //
         //Serialize stop_to_vertex
         auto &route_manager_pack = *transport_package_.mutable_route_manager();
-        for (const auto& [key, value] : route_manager->stop_to_vertex_) {
+        for (const auto&[key, value] : route_manager->stop_to_vertex_) {
             auto stop_to_vertex = route_manager_pack.add_stop_to_vertex();
             stop_to_vertex->set_name(key);
             stop_to_vertex->set_vertex_id(value);

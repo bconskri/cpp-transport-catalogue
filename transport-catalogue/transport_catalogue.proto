@@ -15,7 +15,7 @@ message Rgba {
 
 message Color {
   oneof str_rgb_rgba {
-    string str_color = 1;
+    bytes str_color = 1;
     Rgb rgb = 2;
     Rgba rgba = 3;
   }
@@ -42,7 +42,7 @@ message RoutingSettings {
 };
 
 message SerializerSettings {
-  string file = 1;
+  bytes file = 1;
 };
 
 message Coordinates {
@@ -51,19 +51,19 @@ message Coordinates {
 };
 
 message Distance_to_stop {
-  string stop_name = 1;
+  bytes stop_name = 1;
   uint32 distance = 2;
 };
 
 message BusStop {
-  string name = 1;
+  bytes name = 1;
   Coordinates coordinates = 2;
   repeated Distance_to_stop distances = 3;
 };
 
 message BusRoute {
-  string name = 1;
-  repeated string stops = 2;
+  bytes name = 1;
+  repeated bytes stops = 2;
   bool is_roundtrip = 3;
 };
 
@@ -107,13 +107,13 @@ message Router {
 };
 
 message StopToVertex{
-  string name = 1;
+  bytes name = 1;
   uint32 vertex_id = 2;
 };
 
 message RouteEdgeInfo {
-  string stop_name = 1;
-  string bus = 2;
+  bytes stop_name = 1;
+  bytes bus = 2;
   uint32 span_count = 3;
   double time = 4;
   bool type = 5; //Wait = 0, Bus = 1
