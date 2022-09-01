@@ -250,9 +250,9 @@ namespace serialization {
                             }
                             //свопить приват поля приводит к плавающей ошибке в тренажере
                             //сделал через конструктор
-                            route_manager->router_ = std::make_unique<graph::Router<double>>(
+                            route_manager->router_ = std::make_shared<graph::Router<double>>(graph::Router<double>(
                                     route_manager->graph_.value(),
-                                    std::move(routes_internal_data));
+                                    std::move(routes_internal_data)));
                         }
                     }
                 }

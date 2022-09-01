@@ -22,6 +22,8 @@ namespace serialization {
         transport_package::TransportPackage transport_package_;
 
     public:
+        Serializer() = default;
+
         void SetSettings(const SerializerSettings &settings);
         bool FileDefined() const;
         void Serialize(const BusRoute& route);

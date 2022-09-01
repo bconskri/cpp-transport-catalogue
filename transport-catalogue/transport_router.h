@@ -57,10 +57,9 @@ namespace transport_router {
         //нужно уметь восстановить по номеру ребра все данные для вывода в отчет
         std::unordered_map<graph::EdgeId, RouteEdgeInfo> edge_to_route_segment_;
         //Graph надо строить 1 раз. Сделаем LazyValue механизм
-        std::optional<graph::DirectedWeightedGraph<double>> graph_;
+        std::optional<graph::DirectedWeightedGraph<double>> graph_ = std::nullopt;
         //здесь будем хранить роутер
-        std::unique_ptr<graph::Router<double>> router_;
-
+        std::shared_ptr<graph::Router<double>> router_ = nullptr;
         //
         void BuildBusRoutesGraph(std::shared_ptr<TransportCatalogue>);
     };

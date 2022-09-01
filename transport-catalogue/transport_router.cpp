@@ -15,7 +15,7 @@ namespace transport_router {
             BuildBusRoutesGraph(transport_catalogue);
             //создадим на нем роутер
             if (graph_->GetEdgeCount() > 0) {
-                router_ = std::make_unique<Router>(Router(graph_.value()));
+                router_ = std::make_shared<graph::Router<double>>(graph::Router<double>(graph_.value()));
             }
         }
         //в графе нет ни одного ребра - маршруты строить просто не на чем
