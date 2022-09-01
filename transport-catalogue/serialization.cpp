@@ -221,9 +221,8 @@ namespace serialization {
                                     incidence_lists_element.push_back(incidence_lists_pack.edge_id(j));
                                 }
                             }
-                            std::optional<graph::DirectedWeightedGraph<double>> graph =
-                                    graph::DirectedWeightedGraph<double>(std::move(edges), std::move(incidence_lists));
-                            route_manager->graph_.swap(graph);
+                            route_manager->graph_ = graph::DirectedWeightedGraph<double>(std::move(edges),
+                                                                                         std::move(incidence_lists));
                         }
                         //deSerialize router_
                         {

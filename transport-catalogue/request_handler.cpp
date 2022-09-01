@@ -25,7 +25,7 @@ namespace request_handler {
     }
 
     Logger *Logger::GetLogger(const io_stream datasearch, std::string file_name) {
-        Logger *p;
+        Logger *p = nullptr;
         switch (datasearch) {
             case Console:
                 p = new ConsoleLogger();
@@ -42,7 +42,7 @@ namespace request_handler {
     }
 
     Inputer *Inputer::GetInputer(const io_stream datasearch, std::string file_name) {
-        Inputer *p;
+        Inputer *p =nullptr;
         switch (datasearch) {
             case Console:
                 p = new ConsoleInputer();
