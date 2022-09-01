@@ -381,7 +381,7 @@ namespace serialization {
          * std::optional<EdgeId> prev_edge;
          * };
          */
-        auto &routes_internal_data = route_manager->router_->routes_internal_data_;
+        auto &routes_internal_data = route_manager->router_->GetMutableRoutesInternalData();
         auto &mutable_router = *route_manager_pack.mutable_router();
         auto &mutable_routes_internal_data = *mutable_router.mutable_routes_internal_data();
         for (const auto &rd : routes_internal_data) {

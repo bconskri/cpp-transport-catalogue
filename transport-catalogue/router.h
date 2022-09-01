@@ -24,15 +24,16 @@ namespace graph {
     private:
         using Graph = DirectedWeightedGraph<Weight>;
 
+    public:
         struct RouteInternalData {
             Weight weight;
             std::optional<EdgeId> prev_edge;
         };
         using RoutesInternalData = std::vector<std::vector<std::optional<RouteInternalData>>>;
 
-    public:
         explicit Router(const Graph &graph, bool build = 1);
-        explicit Router(const Graph& graph, RoutesInternalData&& routes_internal_data);
+
+        explicit Router(const Graph &graph, RoutesInternalData &&routes_internal_data);
 
         struct RouteInfo {
             Weight weight;
@@ -40,6 +41,14 @@ namespace graph {
         };
 
         std::optional<RouteInfo> BuildRoute(VertexId from, VertexId to) const;
+
+        RoutesInternalData &GetMutableRoutesInternalData() {
+            return routes_internal_data_;
+        }
+
+        const RoutesInternalData *GetRoutesInternalData() const {
+            return &routes_internal_data_;
+        }
 
     private:
         void InitializeRoutesInternalData(const Graph &graph) {
@@ -84,7 +93,7 @@ namespace graph {
         static constexpr Weight ZERO_WEIGHT{};
 
         //we need it friend to access private struc to serialize
-        friend class serialization::Serializer;
+        //friend class serialization::Serializer;
 
         //
         const Graph &graph_;
@@ -106,8 +115,8 @@ namespace graph {
         }
     }
 
-    template <typename Weight>
-    Router<Weight>::Router(const Graph& graph, RoutesInternalData&& routes_internal_data)
+    template<typename Weight>
+    Router<Weight>::Router(const Graph &graph, RoutesInternalData &&routes_internal_data)
             : graph_(graph), routes_internal_data_(std::move(routes_internal_data)) {}
 
     template<typename Weight>
