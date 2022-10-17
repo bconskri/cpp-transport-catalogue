@@ -1,32 +1,30 @@
-Транспортный справочник
-
+### cpp-transport-catalogue
+# Транспортный справочник / роутер
 Система хранения транспортных маршрутов и обработки запросов к ней:
+- Входные данные и ответ в JSON-формате.
+- Выходной JSON-файл может содержать визуализацию карты маршрута(ов) в формате SVG-файла.  
+- Поиск кратчайшего маршрута. 
+- Сериализация базы данных и настроек справочника при помощи Google Protobuf. 
+- Объекты JSON поддерживают цепочки вызовов (method chaining) при конструировании, превращая ошибки применения данных формата JSON в ошибки компиляции.
 
-    Входные данные и ответ в JSON-формате.
-    Выходной JSON-файл может содержать визуализацию карты маршрута(ов) в формате SVG-файла.
-    Поиск кратчайшего маршрута.
-    Сериализация базы данных и настроек справочника при помощи Google Protobuf.
-    Объекты JSON поддерживают цепочки вызовов (method chaining) при конструировании, превращая ошибки применения данных формата JSON в ошибки компиляции.
+### Использованные идеомы, технологии и элементы языка
+- OOP: inheritance, abstract interfaces, final classes
+- Unordered map/set
+- STL smart pointers
+- std::variant and std:optional
+- JSON load / output
+- SVG image format embedded inside XML output
+- Curiously Recurring Template Pattern (CRTP)
+- Method chaining
+- Facade design pattern
+- C++17 with С++20 Ranges emulation
+- Directed Weighted Graph data structure for Router module
+- Google Protocol Buffers for data serialization
+- Static libraries .LIB/.A
+- CMake generated project and dependency files
 
-Использованные идеомы, технологии и элементы языка
-
-    OOP: inheritance, abstract interfaces, final classes
-    Unordered map/set
-    STL smart pointers
-    std::variant and std:optional
-    JSON load / output
-    SVG image format embedded inside XML output
-    Curiously Recurring Template Pattern (CRTP)
-    Method chaining
-    Facade design pattern
-    C++17 with С++20 Ranges emulation
-    Directed Weighted Graph data structure for Router module
-    Google Protocol Buffers for data serialization (Protobuf)
-    Static libraries .LIB/.A
-    CMake generated project and dependency files
-    
-    
- Конфигурация CMake
+## Сборка проекта CMake
+```
  cmake_minimum_required(VERSION 3.11)
 project(TransportCatalogue)
 
@@ -48,9 +46,9 @@ string(REPLACE "protobuf.lib" "protobufd.lib" "Protobuf_LIBRARY_DEBUG" "${Protob
 string(REPLACE "protobuf.a" "protobufd.a" "Protobuf_LIBRARY_DEBUG" "${Protobuf_LIBRARY_DEBUG}")
 
 target_link_libraries(TransportCatalogue "$<IF:$<CONFIG:Debug>,${Protobuf_LIBRARY_DEBUG},${Protobuf_LIBRARY}>" Threads::Threads)
+```
 
-
-Запуск программы
+##Запуск программы
 
 Приложение транспортного справочника спроектировано для работы в 2 режимах: режиме создания базы данных и режиме запросов к базе данных.
 
@@ -60,7 +58,8 @@ transport_catalogue.exe make_base <input_data.json
 Для обработки запросов к созданной базе данных (сама база данных десериализуется из ранее созданного файла) необходимо запустить программу с параметром process_requests, указав входной JSON-файл, содержащий запрос(ы) к БД и выходной файл, который будет содержать ответы на запросы, также в формате JSON.
 Пример:
 transport_catalogue.exe process_requests <requests.json >output.txt
-Формат входных данных
+
+## Формат входных данных
 
 Входные данные принимаются из stdin в JSON формате. Структура верхнего уровня имеет следующий вид:
 
